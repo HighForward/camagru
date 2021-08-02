@@ -13,9 +13,9 @@ services:
       PORT: 4000
       FRONT_URL: "http://localhost:80"
       DB_NAME: "camagru"
-      DB_USERNAME: "root"
+      DB_USER: "root"
       DB_PASSWORD: "admin"
-      DB_HOST: "localhost"
+      DB_HOST: "mysql"
     command: "yarn start:dev"
     depends_on:
       - mysql

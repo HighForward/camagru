@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+	<meta charset="UTF-8">
+	<title>Camagru</title>
+	<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="fixed flex w-screen h-16 border justify-between items-center border-b" style="background: white">
+	<h1 class="flex justify-center text-center pl-16">Camagru</h1>
+	<div>
+		<a href="/auth" class="flex justify-center px-4 py-2 rounded text-center border border-gray-400 mr-16" style="background: #2ECC71;">Se connecter</a>
+	</div>
+</div>
+<div class="flex items-center justify-center h-screen w-screen">
+	<div class="fixed pt-16" style="top: 30px; left: 30px">
+		<a href="/">< Retour</a>
+	</div>
+	<div class="flex flex-col justify center bg-fullwhite p-4 rounded shadow w-96">
+		<h1 class="text-2xl text-text text-center my-8 font-medium">Login to <span class="text-secondary">Camagru</span></h1>
+		<form  class="flex flex-col m-2 text-xl">
+			<input class="rounded-md border border-text w-full mb-6 p-2">
+			<input class="rounded-md border border-text w-full mb-6 p-2">
+			<input class="rounded-md border border-text w-full mb-6 p-2">
+			<div class="font-light text-sm mb-6 text-center">
+				tu as déjà un profil ? connecte toi <a href="/auth/login.html" class="text-primary font-semibold">ici</a> !
+			</div>
+			<button class="border rounded-md border-text hover:text-primary hover:bg-stroke flex bg-primary text-light w-full items-center font-medium justify-center py-4">
+				Je m'enregistre
+			</button>
+		</form>
+	</div>
+</div>
+</body>
+</html>
+
+<script>
+
+	localStorage.setItem('lastname','Smith')
+	console.log(localStorage.getItem('lastname'))
+
+</script>

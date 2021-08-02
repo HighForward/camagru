@@ -1,39 +1,33 @@
-import http from 'http'
+import express from 'express'
 import mysql from 'mysql'
+let app = express()
+import usersRouter from './srcs/users/users.routes'
+import authRouter from './srcs/auth/auth.routes'
+import bodyParser from "body-parser"
 
 const con = mysql.createConnection({
-    host: "mysql",
-    user: "root",
-    password: "admin",
-    database: "camagru"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
-//
+
 con.connect(function(err) {
     if (err) throw err;
-    console.log("Connected!");
+    console.log("Connected to MySQL");
 });
 
 const PORT = process.env.PORT || 4000;
 
-const server = http.createServer(async (req, res) => {
-    //set the request route
-    if (req.url === "/api" && req.method === "GET") {
-        //response headers
-        res.writeHead(200, { "Content-Type": "application/json" });
-        //set the response
-        res.write("Hi there, This is a Vanilla Node.js API");
-        //end the response
-        res.end();
+app.use(bodyParser.json());
+app.use('/users', usersRouter)
+app.use('/auth', authRouter)
 
-    }
 
-    // If no route present
-    else {
-        res.writeHead(404, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: "Route not found" }));
-    }
-});
+app.get('/', (req, res) => {
+    return res.json({ success: "Camagru API alive" })
+})
 
-server.listen(PORT, () => {
-    console.log(`server started on port: ${PORT}`);
-});
+app.listen(PORT, () => {
+    console.log(`Camagru API listening at http://localhost:${PORT}`)
+})
