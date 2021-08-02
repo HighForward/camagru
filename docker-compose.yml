@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  back:
+    build: ./back/
+    container_name: camagru_api
+    restart: always
+    volumes:
+      - ./back:/app
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      FRONT_URL: "http://localhost:80"
+      DB_NAME: "camagru"
+      DB_USERNAME: "root"
+      DB_PASSWORD: "admin"
+      DB_HOST: "localhost"
+    command: "yarn start:dev"
+    depends_on:
+      - mysql
+  front:
+    image: nginx
+    container_name: camagru_front
+    restart: always
+    volumes:
+      - ./front/conf:/etc/nginx/conf.d
+      - ./front/html:/home/html
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=foobar.com
+      - NGINX_PORT=80
+  mysql:
+    image: mysql:5
+    restart: always
+    volumes:
+      - ./db/create-database.sql:/docker-entrypoint-initdb.d/create_database.sql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    command: --default-authentication-plugin=mysql_native_password
