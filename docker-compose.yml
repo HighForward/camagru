@@ -25,7 +25,7 @@ services:
     restart: always
     volumes:
       - ./front/conf:/etc/nginx/conf.d
-      - ./front/html:/home/html
+      - ./front/app:/home/app
     ports:
       - "80:80"
     environment:

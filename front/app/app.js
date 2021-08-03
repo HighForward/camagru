@@ -1,17 +1,13 @@
 import home from './js/views/home.js'
 import register from './js/views/register.js'
 import error from './js/views/404.js'
-
-function navigateTo(url) {
-    history.pushState(null, null, url);
-    router();
-}
+import feed from './js/views/feed.js'
 
 const router = async () => {
     const routes = [
         {path: "/", view: home},
-        {path: "/posts", view: register},
-        {path: "/posts/:id"},
+        {path: "/register", view: register},
+        {path: "/feed", view: feed},
         // {path: "/settings"}
     ];
 
@@ -25,16 +21,29 @@ const router = async () => {
     document.querySelector("#app").innerHTML = view.getHtml();
 }
 
+document.body.addEventListener("click", e => {
+    if (e.target.matches("[data-link]")) {
+        e.preventDefault();
+        history.pushState(null, null, e.target.href);
+        router();
+    }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.body.addEventListener("click", e => {
-        if (e.target.matches("[data-link]")) {
-            e.preventDefault();
-            navigateTo(e.target.href);
-        }
-    });
-
     router();
 });
 
 window.addEventListener("popstate", router);
+
+
+// function processForm(e) {
+//     if (e.preventDefault) e.preventDefault();
+//
+//     console.log("bite")
+//     window.location.href = '/auth'
+//
+//     return false;
+// }
+//
+// let form = document.getElementById('my-form');
+// form.addEventListener("submit", processForm);
