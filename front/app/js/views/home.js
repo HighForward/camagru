@@ -17,4 +17,11 @@ export default class extends AbstractView {
         `;
     }
 
+    getView(app) {
+
+        let app_div = document.getElementById('app')
+        app_div.innerHTML = this.getHtml()
+
+    }
+
 }

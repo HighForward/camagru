@@ -1,9 +1,19 @@
 import express from 'express'
+import cors from 'cors';
 import mysql from 'mysql'
-let app = express()
 import usersRouter from './srcs/users/users.routes'
 import authRouter from './srcs/auth/auth.routes'
 import bodyParser from "body-parser"
+
+const allowedOrigins = ['http://localhost'];
+
+const options = cors.CorsOptions = {
+    origin: allowedOrigins
+};
+
+
+let app = express()
+app.use(cors(options))
 
 const con = mysql.createConnection({
     host: process.env.DB_HOST,
