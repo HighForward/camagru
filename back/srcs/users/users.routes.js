@@ -1,9 +1,10 @@
 import express from 'express'
+import {createUser, findAll, findOne} from "./users.services";
 
 const usersRoutes = express.Router();
 
-usersRoutes.get('/', (req, res) => {
-    return res.json({ users: "alive" })
+usersRoutes.get('/', async (req, res) => {
+    return res.json(await findAll())
 })
 
 
