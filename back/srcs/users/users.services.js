@@ -28,9 +28,9 @@ export async function findOneByUsername(username)
     })
 }
 
-export async function userExists(username, email)
+export async function userExists(email)
 {
-    return await query(`SELECT * from users where username = '${username}' AND email = '${email}'`, false).then(e => {
+    return await query(`SELECT * from users where email = '${email}'`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})
@@ -43,7 +43,7 @@ export async function createUser(payload)
 
     let { email, username, password } = payload
 
-    let user = await userExists(username, email)
+    let user = await userExists(email)
 
     if (!user) {
 

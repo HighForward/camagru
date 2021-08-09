@@ -13,11 +13,11 @@ export default class extends AbstractView {
     getView(app) {
 
         super.getView()
-        // let app_div = document.getElementById('app')
-        // app_div.innerHTML = this.getHtml()
 
         let app_div = document.getElementById('app')
-        app_div.insertAdjacentHTML('afterbegin',"<div id='creator_1' class='w-full flex justify-center items-center text-3xl font-bold' style='height: calc(100vh - 4rem)'>")
+        app_div.insertAdjacentHTML('afterbegin',"<div id='main_creator' class='w-full flex flex-row justify-center items-center' style='height: calc(100vh - 4rem)'>")
+        document.getElementById('main_creator').insertAdjacentHTML('afterbegin',"<input type='file'>")
+        document.getElementById('main_creator').insertAdjacentHTML('beforeend',"<div id='creator_1' class=''>")
         document.getElementById('creator_1').insertAdjacentHTML('afterbegin', '<canvas id="canvas_creator" width="600px" height="600px"></canvas>')
 
         let canvas = document.getElementById("canvas_creator");
@@ -41,12 +41,6 @@ export default class extends AbstractView {
             rect(item)
         }
 
-        let BB = canvas.getBoundingClientRect();
-        let offsetX = BB.left;
-        let offsetY = BB.top;
-        let startmx
-        let startmy
-
         let item = {x:50, y:50, width:30, height:30, fill:"#444444", selected: true}
 
         draw()
@@ -54,65 +48,34 @@ export default class extends AbstractView {
             e.preventDefault();
             e.stopPropagation();
 
-            console.log(e.clientX)
+            const canvas_screen = canvas.getBoundingClientRect()
 
-            let mx = parseInt(e.clientX - offsetX);
-            let my = parseInt(e.clientY - offsetY);
+            let mouse_x = Math.floor(e.x - canvas_screen.left)
+            let mouse_y = Math.floor(e.y - canvas_screen.top)
 
-            startmx = mx
-            startmy = my
+            if ((mouse_x >= item.x && mouse_x <= item.x + item.width) &&
+                (mouse_y >= item.y && mouse_y <= item.y + item.height))
+            {
+                let offsetX = mouse_x - item.x
+                let offsetY = mouse_y - item.y
 
-            let x = e.clientX
-            let y = e.clientY
-            console.log(e.clientX, e.clientY)
+                canvas.onmousemove = (e) => {
+                    mouse_x = Math.floor(e.x - canvas_screen.left)
+                    mouse_y = Math.floor(e.y - canvas_screen.top)
+
+                    item.x = mouse_x - offsetX
+                    item.y = mouse_y - offsetY
+
+                    draw()
+                }
+            }
         }
 
-        canvas.onmousemove = (e) => {
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            let mx = parseInt(e.clientX - offsetX);
-            let my = parseInt(e.clientY - offsetY);
-            console.log(mx, my)
-
-            let dx = mx-startmx;
-            let dy = my-startmy;
-            item.x = dx
-            item.y = dy
-
-            draw();
+        canvas.onmouseup = (e) => {
+            canvas.onmousemove = null
         }
+
     }
 
 }
 
-// document.getElementById('creator_1').insertAdjacentHTML('afterbegin', '<div id="drag_div" class="absolute bg-black" style="width: 600px; height: 600px;"></div>')
-// document.getElementById('drag_div').insertAdjacentHTML('afterbegin', '<div id="creator_drag" class="absolute bg-gray-300 cursor-move" style="width: 100px; height: 100px;"></div>')
-
-
-/*let mouse_x
-let mouse_y
-let pos_x
-let pos_y
-
-document.getElementById('creator_drag').onmousedown = (e) => {
-    e.preventDefault();
-    mouse_x = e.clientX
-    mouse_y = e.clientY
-    document.onmouseup = () => {
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-
-    document.onmousemove = (e) => {
-        e.preventDefault();
-        pos_x = mouse_x - e.clientX;
-        pos_y = mouse_y - e.clientY;
-        mouse_x = e.clientX
-        mouse_y = e.clientY
-        // console.log(mouse_x, mouse_y)
-        document.getElementById('creator_drag').style.top = (document.getElementById('creator_drag').offsetTop - pos_y) + "px";
-        document.getElementById('creator_drag').style.left = (document.getElementById('creator_drag').offsetLeft - pos_x) + "px";
-    }
-};*/

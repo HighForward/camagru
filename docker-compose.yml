@@ -16,6 +16,7 @@ services:
       DB_USER: "root"
       DB_PASSWORD: "admin"
       DB_HOST: "mysql"
+      JWT_SECRET: "secretdefou"
     command: "yarn start:dev"
     depends_on:
       - mysql

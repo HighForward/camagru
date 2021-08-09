@@ -21,12 +21,11 @@ export default class extends AbstractView {
 
         super.getView()
 
-        document.cookie = 'jwt' + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        localStorage.clear();
 
         let app_div = document.getElementById('app')
         app_div.innerHTML = this.getHtml()
 
-        this.pushNotify('Vous êtes maintenant déconnecté !')
     }
 
 }

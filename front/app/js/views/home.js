@@ -24,7 +24,6 @@ export default class extends AbstractView {
         let app_div = document.getElementById('app')
         app_div.innerHTML = this.getHtml()
 
-        this.pushNotify('WOOOOW')
     }
 
 }

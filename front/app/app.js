@@ -6,6 +6,7 @@ import creator from './js/views/creator.js'
 import register from "./js/views/register.js";
 import {isUserOnline} from "./app_utils.js";
 import logout from "./js/views/logout.js";
+import notify from "./js/views/notify.js";
 
 let online_state = false
 
@@ -32,7 +33,7 @@ const router = async () => {
 
     // console.log(document.cookie)
 
-    isUserOnline()
+    await isUserOnline()
 }
 
 document.body.addEventListener("click", async e => {
@@ -46,6 +47,8 @@ document.body.addEventListener("click", async e => {
 document.addEventListener("DOMContentLoaded", async () => {
     await router()
 });
+
+export let notifyHandler = new notify()
 
 window.addEventListener("popstate", router)
 
