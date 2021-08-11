@@ -56,3 +56,22 @@ export async function createUser(payload)
     }
     throw ({ error: 'Username or email already registered' })
 }
+
+export async function updateUser(payload)
+{
+    let {username, password, email} = payload
+
+    if (!username || !password || !email)
+        return ({ error: 'missings values' })
+
+    if (await findOneByUsername(username).then(e => {
+        return !e.error;
+    }).catch(e => {
+      return false
+    }))
+        return ({ error: 'Username already used' })
+
+
+
+    return ({ error: 'Error while trying update user' })
+}

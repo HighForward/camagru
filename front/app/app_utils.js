@@ -1,7 +1,6 @@
+import {app_header} from './app.js'
+
 export async function isUserOnline() {
-    let header_connect = document.getElementById('online_state_header')
-    if (header_connect.firstChild)
-        header_connect.removeChild(header_connect.firstChild)
 
     let online = false
 
@@ -15,30 +14,42 @@ export async function isUserOnline() {
             return !e.error;
         }).catch((e) => {
             console.log(e)
+            return false
         })
+
+        console.log(online)
 
         if (!online)
             localStorage.clear();
     }
 
-    if (!online)
-        document.getElementById('online_state_header').insertAdjacentHTML('afterbegin', `<a href="/login" class="flex justify-center px-4 py-2 rounded text-center border border-gray-400 mr-16" style="background: #2ECC71;" data-link>Connexion</a>`)
-    else
-        document.getElementById('online_state_header').insertAdjacentHTML('afterbegin', `<a href="/logout" class="flex justify-center px-4 py-2 rounded text-center border border-gray-400 mr-16" style="background: #2ECC71;" data-link>Déconnexion</a>`)
+    app_header.updateOnlineStateHeader(online, user)
 
-    return (online)
+    return (user)
 }
 
-export async function fetch_json(url, method, data) {
-    return await fetch(url, {
+export async function fetch_json(url, method, data, authJWT = false) {
+
+    let init = {
         method: method,
         body: JSON.stringify(data),
         headers: new Headers({
             "Content-Type": "application/json"
         })
-    }).then((res) => {
+    }
+
+    if (authJWT) {
+        init.headers.append('withCredentials', true)
+        init.headers.append('credentials', 'includes')
+        init.headers.append("Authorization", `Bearer ${localStorage.getItem('jwt')}`)
+    }
+
+    return await fetch(url, init).then((res) => {
         return res.json()
     }).catch((e) => {
+        // console.log(e)
+        if (e.error)
+            return ({ error: e.error })
         return ({ error: 'error request'})
     })
 }

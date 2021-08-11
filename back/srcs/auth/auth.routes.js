@@ -29,9 +29,9 @@ authRouter.post('/register', async (req, res) => {
             online: true
         }, process.env.JWT_SECRET)
 
-        return res.json({jwt: jwt_token})
+        return res.json({ jwt: jwt_token})
     }).catch(e => {
-        return res.status(401).json({error: e.error })
+        return res.status(401).json({ error: e.error })
     })
 })
 

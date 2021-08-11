@@ -11,6 +11,17 @@ export default class extends AbstractView {
 
     getHtml() {
         return `
+            <div id="log_1" class="flex items-center justify-center w-full" style="height: calc(100vh - 4rem)">
+                <div id="log_2" class="flex flex-col bg-white p-4 rounded shadow w-96">
+                    <h1 class="text-2xl text-text text-center my-8 font-medium">Login to <span class="text-secondary">Camagru</span></h1>
+                    <form id="form_register" class="flex flex-col m-2 text-xl">
+                        <input id="username" placeholder="username" class="rounded-md border border-text w-full mb-6 p-2">
+                        <input id="password" placeholder="password" class="rounded-md border border-text w-full mb-6 p-2">
+                        <div class="font-light text-sm mb-6 text-center">tu n\'as pas de profil ? créer en un <a href="/register" class="text-primary font-semibold" data-link>ici </a>!</div>
+                        <button class="border rounded-md border-text hover:text-primary hover:bg-stroke flex bg-primary text-light w-full items-center font-medium justify-center py-4">Connection</button>
+                    </form>
+                </div>
+            </div>
         `
     }
 
@@ -19,14 +30,7 @@ export default class extends AbstractView {
         super.getView()
 
         let app_div = document.getElementById('app')
-        app_div.insertAdjacentHTML('afterbegin', '<div id="log_1" class="flex items-center justify-center w-full" style="height: calc(100vh - 4rem)"</div>')
-        document.getElementById('log_1').insertAdjacentHTML('afterbegin', '<div id="log_2" class="flex flex-col justify center bg-white p-4 rounded shadow w-96">')
-        document.getElementById('log_2').insertAdjacentHTML('afterbegin', '<h1 class="text-2xl text-text text-center my-8 font-medium">Login to <span class="text-secondary">Camagru</span></h1>\n')
-        document.getElementById('log_2').insertAdjacentHTML('beforeend', '<form id="form_register" class="flex flex-col m-2 text-xl"></form>')
-        document.getElementById('form_register').insertAdjacentHTML('beforeend', '<input id="username" placeholder="username" class="rounded-md border border-text w-full mb-6 p-2">')
-        document.getElementById('form_register').insertAdjacentHTML('beforeend', '<input id="password" placeholder="password" class="rounded-md border border-text w-full mb-6 p-2">')
-        document.getElementById('form_register').insertAdjacentHTML('beforeend', '<div class="font-light text-sm mb-6 text-center">tu n\'as pas de profil ? créer en un <a href="/register" class="text-primary font-semibold" data-link>ici </a>!</div>')
-        document.getElementById('form_register').insertAdjacentHTML('beforeend', '<button class="border rounded-md border-text hover:text-primary hover:bg-stroke flex bg-primary text-light w-full items-center font-medium justify-center py-4">Connection</button>')
+        app_div.insertAdjacentHTML('afterbegin',  this.getHtml())
 
         document.getElementById('form_register').addEventListener("submit", async (e) => await perform_register(e))
     }
@@ -40,7 +44,6 @@ async function perform_register(e) {
         username: document.getElementById('username').value,
         password: document.getElementById('password').value,
     }
-
 
     const res = await fetch_json('http://localhost:4000/auth/login', 'POST', data)
 

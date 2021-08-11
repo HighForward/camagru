@@ -20,9 +20,6 @@ export default class {
         if (app.innerHTML !== '')
             app.innerHTML = ''
 
-        if (app.firstChild)
-            app.removeChild(app.firstChild)
-
     }
 
 }
