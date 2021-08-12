@@ -13,11 +13,9 @@ export async function isUserOnline() {
                 user = e;
             return !e.error;
         }).catch((e) => {
-            console.log(e)
+            // console.log(e)
             return false
         })
-
-        console.log(online)
 
         if (!online)
             localStorage.clear();
@@ -45,9 +43,9 @@ export async function fetch_json(url, method, data, authJWT = false) {
     }
 
     return await fetch(url, init).then((res) => {
+        console.log("ok?")
         return res.json()
     }).catch((e) => {
-        // console.log(e)
         if (e.error)
             return ({ error: e.error })
         return ({ error: 'error request'})

@@ -39,9 +39,7 @@ authRouter.get('/fetch_user', jwt_middleware, async (req, res) => {
 
     const token = req.headers['authorization'].split(' ')[1]
     const user = jwt.decode(token)
-
     return res.json(await findOne(user.id))
-
 })
 
 export default authRouter

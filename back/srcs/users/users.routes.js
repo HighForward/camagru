@@ -21,8 +21,7 @@ usersRoutes.get('/:username', async (req, res) => {
 })
 
 usersRoutes.post('/update', jwt_middleware, async (req, res) => {
-    console.log(req.body)
-    return res.json(await updateUser(req.body))
+    return res.json(await updateUser(req))
 })
 
 

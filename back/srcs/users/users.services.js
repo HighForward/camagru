@@ -57,21 +57,44 @@ export async function createUser(payload)
     throw ({ error: 'Username or email already registered' })
 }
 
-export async function updateUser(payload)
+export async function updateUser(req)
 {
-    let {username, password, email} = payload
-
-    if (!username || !password || !email)
-        return ({ error: 'missings values' })
-
-    if (await findOneByUsername(username).then(e => {
-        return !e.error;
-    }).catch(e => {
-      return false
-    }))
-        return ({ error: 'Username already used' })
+    let {username, password, email} = req.body
 
 
+    let user = await findOne(req.decoded_token.id)
 
-    return ({ error: 'Error while trying update user' })
+    if (!user || user.error)
+        return ({ error: 'Updating error' })
+
+    if (!username || username === user.username) {
+        // do nothing
+    }
+    else
+    {
+        let target_username = await findOneByUsername(username)
+
+        console.log(target_username)
+
+        if (target_username)
+            return ({ error: 'Username already used' })
+
+        await query(`UPDATE users SET username = '${username}' WHERE id = ${req.decoded_token.id}`).then(e => {
+            console.log(e)
+        }).then(e => {
+
+        })
+
+        let new_user = await findOneByUsername(username)
+
+
+
+    }
+
+
+
+
+
+
+    return ({ success: 'Updated' })
 }

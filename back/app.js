@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from "body-parser"
 import usersRouter from './srcs/users/users.routes'
 import authRouter from './srcs/auth/auth.routes'
+import cdnRouter from './srcs/cdn/cdn.routes'
 
 const allowedOrigins = ['http://localhost'];
 
@@ -18,6 +19,7 @@ const PORT = process.env.PORT || 4000;
 app.use(bodyParser.json());
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
+app.use('/cdn', cdnRouter)
 
 
 app.get('/', (req, res) => {

@@ -6,7 +6,7 @@ import {notifyHandler} from "../../app.js";
 export default class extends AbstractView {
     constructor(params) {
         super(params);
-        this.setTitle("Profil");
+        this.setTitle("Settings");
     }
 
     getHtml(user) {
@@ -76,6 +76,9 @@ export default class extends AbstractView {
             fetch_json('http://localhost:4000/users/update', 'POST', data, true).then((e) => {
                 if (e.error)
                     notifyHandler.PushNotify('error', e.error)
+                if (e.success)
+                    notifyHandler.PushNotify('success', e.success)
+
             }).catch((e) => {
                 console.log('error', e)
 
@@ -90,14 +93,19 @@ export default class extends AbstractView {
             let reader = new FileReader()
             reader.readAsDataURL(uploaded);
 
-            reader.onloadend = () => {
+            reader.onloadend = async () => {
                 console.log(reader.result)
                 let img_target = document.getElementById('img_target')
 
                 img_target.innerHTML = '<img class="rounded-full" src="' + reader.result + '" />';
+
+                let data = {
+                    imgBase64: reader.result
+                }
+
+                let resp = await fetch_json('http://localhost:4000/cdn', 'POST', data, true)
             }
 
-            console.log(reader)
         })
 
     }

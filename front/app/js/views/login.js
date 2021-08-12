@@ -1,6 +1,5 @@
 import AbstractView from "./abstractView.js";
 import {fetch_json} from "../../app_utils.js";
-import notify from "./notify.js";
 import {notifyHandler} from "../../app.js";
 
 export default class extends AbstractView {
