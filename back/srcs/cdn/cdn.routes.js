@@ -18,4 +18,9 @@ cdnRoutes.post('/', jwt_middleware, (req, res) => {
     return res.json({okey: 'okeyyy'})
 })
 
+cdnRoutes.get('/:img', jwt_middleware, (req, res) => {
+    res.set({'Content-Type': 'image/png'});
+    return res.sendFile('/out.png')
+})
+
 export default cdnRoutes

@@ -43,7 +43,6 @@ export async function fetch_json(url, method, data, authJWT = false) {
     }
 
     return await fetch(url, init).then((res) => {
-        console.log("ok?")
         return res.json()
     }).catch((e) => {
         if (e.error)

@@ -1,4 +1,5 @@
 import AbstractView from "./abstractView.js";
+import {fetch_json} from "../../app_utils.js";
 
 export default class extends AbstractView {
     constructor(params) {
@@ -7,18 +8,22 @@ export default class extends AbstractView {
     }
 
     getHtml() {
-
+        return `<div class='w-full flex flex-row justify-center items-center' style='height: calc(100vh - 4rem)'>
+                    <div id="header_info" class="flex flex-row items-center justify-between py-4">
+                        <input class="opacity-0 w-0 h-0 absolute" type="file" id="file" accept="image/*">
+                        <label class="flex items-center w-48 h-8 border-gray-400 rounded justify-center hover:text-white cursor-pointer" style="background: #2ECC71;" for="file">Select file</label>
+                    </div>
+                    <canvas id="canvas_creator" width="600px" height="600px"></canvas>
+                </div>`
     }
 
     getView(app) {
 
+
         super.getView()
 
         let app_div = document.getElementById('app')
-        app_div.insertAdjacentHTML('afterbegin',"<div id='main_creator' class='w-full flex flex-row justify-center items-center' style='height: calc(100vh - 4rem)'>")
-        document.getElementById('main_creator').insertAdjacentHTML('afterbegin',"<input type='file'>")
-        document.getElementById('main_creator').insertAdjacentHTML('beforeend',"<div id='creator_1' class=''>")
-        document.getElementById('creator_1').insertAdjacentHTML('afterbegin', '<canvas id="canvas_creator" width="600px" height="600px"></canvas>')
+        app_div.insertAdjacentHTML('afterbegin', this.getHtml())
 
         let canvas = document.getElementById("canvas_creator");
         let ctx = canvas.getContext("2d");
@@ -43,7 +48,7 @@ export default class extends AbstractView {
 
         let item = {x:50, y:50, width:30, height:30, fill:"#444444", selected: true}
 
-        draw()
+        // draw()
         canvas.onmousedown = (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -66,7 +71,7 @@ export default class extends AbstractView {
                     item.x = mouse_x - offsetX
                     item.y = mouse_y - offsetY
 
-                    draw()
+                    // draw()
                 }
             }
         }
@@ -74,6 +79,32 @@ export default class extends AbstractView {
         canvas.onmouseup = (e) => {
             canvas.onmousemove = null
         }
+
+        function ab2str(buf) {
+            return String.fromCharCode.apply(null, new Uint16Array(buf));
+        }
+
+        document.getElementById('file').addEventListener('change', (e) => {
+            e.preventDefault()
+
+            let uploaded = document.getElementById('file').files[0]
+
+            let reader = new FileReader()
+            reader.readAsDataURL(uploaded);
+
+            reader.onloadend = () => {
+                let data = {
+                    imgBase64: reader.result
+                }
+
+                let img = new Image()
+                img.src = reader.result;
+                img.onload = () => ctx.drawImage(img,0,0, img.width, img.height, 0, 0, canvas.width, canvas.height)
+
+                // let resp = await fetch_json('http://localhost:4000/cdn', 'POST', data, true)
+            }
+
+        })
 
     }
 

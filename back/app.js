@@ -17,6 +17,7 @@ app.use(cors(options))
 const PORT = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
+app.use(express.static('img'))
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/cdn', cdnRouter)

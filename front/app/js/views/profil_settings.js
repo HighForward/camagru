@@ -104,6 +104,7 @@ export default class extends AbstractView {
                 }
 
                 let resp = await fetch_json('http://localhost:4000/cdn', 'POST', data, true)
+                console.log(resp)
             }
 
         })
