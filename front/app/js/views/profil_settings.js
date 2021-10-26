@@ -1,5 +1,5 @@
 import AbstractView from "./abstractView.js";
-import {fetch_json} from "../../app_utils.js";
+import {fetch_get, fetch_json} from "../../app_utils.js";
 import {notifyHandler} from "../../app.js";
 
 
@@ -20,7 +20,7 @@ export default class extends AbstractView {
                     <form id="settings_form" class="flex pt-4 flex-col">
                             <div id="header_info" class="flex flex-row items-center justify-between py-4">
                                 <div id="header_photo" class="flex flex-col">
-                                    <div id="img_target" class="rounded-full" style="width: 64px; height: 64px"></div>
+                                    <div id="img_target" class="rounded-full border" style="width: 64px; height: 64px"></div>
                                  </div>
                                 <input class="opacity-0 w-0 h-0 absolute" type="file" id="file" accept="image/*">
                                 <label class="flex items-center w-48 h-8 border-gray-400 rounded justify-center hover:text-white cursor-pointer" style="background: #2ECC71;" for="file">Select file</label>
@@ -50,7 +50,7 @@ export default class extends AbstractView {
         `;
     }
 
-    getView(user) {
+    async getView(user) {
 
         if (!user) {
             document.location.href = '/login'
@@ -62,6 +62,12 @@ export default class extends AbstractView {
         let app_div = document.getElementById('app')
 
         app_div.insertAdjacentHTML( 'afterbegin' ,this.getHtml(user))
+
+        let img_target = document.getElementById('img_target')
+
+        let img = await fetch_get(`http://localhost:4000/cdn/profile-picture/${user.username}`)
+
+        img_target.innerHTML = `<img style="width: 64px; height: 64px" class="rounded-full" src="data:image/jpeg;base64,${img.imgBase64}" />`;
 
         document.getElementById('settings_form').addEventListener('submit', (e) => {
 
@@ -97,14 +103,13 @@ export default class extends AbstractView {
                 console.log(reader.result)
                 let img_target = document.getElementById('img_target')
 
-                img_target.innerHTML = '<img class="rounded-full" src="' + reader.result + '" />';
+                img_target.innerHTML = '<img style="width: 64px; height: 64px" class="rounded-full" src="' + reader.result + '" />';
 
                 let data = {
                     imgBase64: reader.result
                 }
 
-                let resp = await fetch_json('http://localhost:4000/cdn', 'POST', data, true)
-                console.log(resp)
+                let resp = await fetch_json('http://localhost:4000/cdn/profile-picture', 'POST', data, true)
             }
 
         })

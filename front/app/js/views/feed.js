@@ -13,7 +13,8 @@ export default class extends AbstractView {
                     <div class="flex w-full items-center h-8">
                         <h1 class="pl-4 font-bold">forward</h1>
                     </div>
-                    <img src="../assets/img/chat.jpg" alt="" class="img_class">
+                    <div class="h-64 w-64 bg-gray-500"></div>
+                    <img src="#" alt="" class="img_class">
                     <div>
                         <nav class="pl-4">
                             <a class="px-2" href="#">Like</a>

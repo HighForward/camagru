@@ -12,12 +12,12 @@ export default class extends AbstractView {
         return `
             <div id="log_1" class="flex items-center justify-center w-full" style="height: calc(100vh - 4rem)">
                 <div id="log_2" class="flex flex-col bg-white p-4 rounded shadow w-96">
-                    <h1 class="text-2xl text-text text-center my-8 font-medium">Login to <span class="text-secondary">Camagru</span></h1>
+                    <h1 class="text-2xl text-text text-center my-8 font-medium">Connexion à <span class="text-secondary">Camagru</span></h1>
                     <form id="form_register" class="flex flex-col m-2 text-xl">
                         <input id="username" placeholder="username" class="rounded-md border border-text w-full mb-6 p-2">
                         <input id="password" placeholder="password" class="rounded-md border border-text w-full mb-6 p-2">
-                        <div class="font-light text-sm mb-6 text-center">tu n\'as pas de profil ? créer en un <a href="/register" class="text-primary font-semibold" data-link>ici </a>!</div>
-                        <button class="border rounded-md border-text hover:text-primary hover:bg-stroke flex bg-primary text-light w-full items-center font-medium justify-center py-4">Connection</button>
+                        <div class="font-light text-sm mb-6 text-center">tu n\'as pas de profil ? créer en un <a href="/register" style="color: #2ECC71" class="text-primary font-semibold" data-link>ici </a>!</div>
+                        <button style="background: #2ECC71" class="border rounded-md hover:text-gray-200 flex w-full items-center font-medium justify-center py-4 ">Connexion</button>
                     </form>
                 </div>
             </div>

@@ -31,9 +31,9 @@ export default class extends AbstractView {
         return `
         <div class="fixed flex w-screen h-16 border justify-between items-center border-b" style="background: white">
             <div class="flex flex-row">
-                <a href="/" class="flex justify-center text-center ml-16" data-link>Camagru</a>
-                <a href="/feed" class="flex justify-center text-center ml-16" data-link>Feed</a>
-                <a href="/creator" class="flex justify-center text-center ml-16" data-link>Creator</a>
+                <a href="/" class="flex justify-center text-center ml-16 font-semibold" data-link>Camagru</a>
+                <a href="/feed" class="flex justify-center text-center ml-16 font-semibold" data-link>Feed</a>
+                <a href="/creator" class="flex justify-center text-center ml-16 font-semibold" data-link>Creator</a>
             </div>
             <div id="online_state_header" class="flex flex-row"></div>
         </div>
