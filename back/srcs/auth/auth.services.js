@@ -1,5 +1,6 @@
 import {query} from "../mysql/mysql";
 import {createUser} from "../users/users.services";
+import fs from "fs";
 
 export async function log_in(data)
 {
@@ -25,9 +26,15 @@ export async function register(data)
 
         throw ({ error: 'username or password: wrong format' })
 
-    return await createUser(data).then(e => {
+    const user = await createUser(data).then(e => {
         return e
     }).catch(e => {
         throw ({ error: e.error })
     })
-}
+
+    fs.mkdir(`./img/users/${user.username}`, {recursive: true}, (e) => {
+        console.log(e)
+    })
+
+    return user
+    }

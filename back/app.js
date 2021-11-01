@@ -16,12 +16,11 @@ app.use(cors(options))
 
 const PORT = process.env.PORT || 4000;
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb'}));
 app.use('/img', express.static('img/filters'))
 app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/cdn', cdnRouter)
-
 
 app.get('/', (req, res) => {
     return res.json({ success: "Camagru API alive" })

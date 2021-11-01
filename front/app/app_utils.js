@@ -21,8 +21,6 @@ export async function isUserOnline() {
             localStorage.clear();
     }
 
-    app_header.updateOnlineStateHeader(online, user)
-
     return (user)
 }
 
