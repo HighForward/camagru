@@ -36,7 +36,7 @@ cdnRoutes.post('/profile-picture', jwt_middleware, async (req, res) => {
     return res.json({success: 'profile picture updated'})
 })
 
-cdnRoutes.get('/profile-picture/:username', jwt_middleware, async (req, res) => {
+cdnRoutes.get('/profile-picture/:username', async (req, res) => {
 
     if (!req.params.username)
         return res.json({error: 'wrong param'})
@@ -51,7 +51,6 @@ cdnRoutes.get('/profile-picture/:username', jwt_middleware, async (req, res) => 
         return res.json({imgBase64: contents})
     }
 
-    console.log('ziz')
     return res.json({error: 'no profile picture found'})
 })
 

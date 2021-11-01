@@ -1,5 +1,5 @@
 import AbstractView from "../abstractView/abstractView.js";
-import {fetch_get} from "../../../app_utils.js";
+import {fetch_get} from "../../app_utils.js";
 
 export default class extends AbstractView {
     constructor(params) {
@@ -29,7 +29,7 @@ export default class extends AbstractView {
         if (posts && posts.length)
         {
             posts.reverse()
-            let postNode = await fetch(`http://localhost/js/views/feed/post.html`).then(async (res) => {
+            let postNode = await fetch(`http://localhost/views/feed/post.html`).then(async (res) => {
                 let text = await res.text()
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(text, "text/html");

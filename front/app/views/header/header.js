@@ -17,11 +17,11 @@ export default class extends AbstractView {
         if (this.connected !== online_state)
             header_left.innerHTML = ''
 
-
         if (this.connected !== online_state && online_state)
         {
             header_left.insertAdjacentHTML('afterbegin', `<a href="/logout" class="flex justify-center px-4 py-2 rounded text-center mr-16" style="background: #2ECC71;" data-link>Déconnexion</a>`)
             header_left.insertAdjacentHTML('afterbegin', `<a href="/user/${user.username}" class="flex justify-center px-4 py-2 rounded text-center mr-4" style="background: #2ECC71;" data-link>Profil</a>`)
+            document.getElementById('header_nav').insertAdjacentHTML('beforeend', `<a href="/creator" class="flex justify-center text-center ml-16 font-semibold" style="color: #2ECC71;" data-link>Creator</a>`)
         }
 
         if (!online_state && header_left.innerHTML === '')
@@ -34,7 +34,7 @@ export default class extends AbstractView {
 
         super.getView()
 
-        let header = await fetch(`http://localhost/js/views/header/header.html`).then(async (res) => {
+        let header = await fetch(`http://localhost/views/header/header.html`).then(async (res) => {
             let text = await res.text()
             let parser = new DOMParser();
             let doc = parser.parseFromString(text, "text/html");

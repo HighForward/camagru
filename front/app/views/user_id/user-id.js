@@ -1,5 +1,5 @@
 import AbstractView from "../abstractView/abstractView.js";
-import {fetch_get} from "../../../app_utils.js";
+import {fetch_get} from "../../app_utils.js";
 
 export default class extends AbstractView {
     constructor(params) {
@@ -25,32 +25,31 @@ export default class extends AbstractView {
         {
             let img = await fetch_get(`http://localhost:4000/cdn/profile-picture/${target_user.username}`)
             let profile_picture = document.getElementById('profile-picture')
+
+            //todo: check if img exists
             profile_picture.innerHTML = `<img style="width: 96px; height: 96px" class="rounded-full" src="data:image/png;base64,${img.imgBase64}" />`;
         }
     }
 
     async setPosts(target_user)
     {
-        let gallery = document.getElementById('galerie')
+        let gallery = document.getElementById('gallery')
 
         let posts = await fetch_get(`http://localhost:4000/cdn/post/user/${target_user.username}`)
 
-        if (!posts.error && posts.length)
-        {
-            for (let i = 0; i < posts.length; i++)
-            {
-                let post = await fetch_get(`http://localhost:4000/cdn/post/${posts[i].id}`)
-                gallery.insertAdjacentHTML('beforeend', `<img class="flex justify-center h-32 w-32" src="data:image/png;base64,${post.imgBase64}">`)
-            }
-        }
-        else if (!posts.error)
-        {
-            console.log('0 post')
-        }
-        else
-        {
+        let posts_data = posts.map(async (post) => {
+                return await fetch_get(`http://localhost:4000/cdn/post/${post.id}`)
+        })
 
-        }
+        posts_data = await Promise.all(posts_data.filter(item => { return !item.error } ))
+
+        gallery.innerHTML = ''
+
+        console.log(posts_data)
+
+        posts_data.forEach((post) => {
+                gallery.insertAdjacentHTML('beforeend', `<img class="flex justify-center h-32 w-32" src="data:image/png;base64,${post.imgBase64}">`)
+        })
 
     }
 

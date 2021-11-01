@@ -1,6 +1,6 @@
 import AbstractView from "../abstractView/abstractView.js";
-import {fetch_get, fetch_json} from "../../../app_utils.js";
-import {notifyHandler} from "../../../app.js";
+import {fetch_get, fetch_json} from "../../app_utils.js";
+import {notifyHandler} from "../../app.js";
 
 
 export default class extends AbstractView {
