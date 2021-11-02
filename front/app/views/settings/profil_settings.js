@@ -11,9 +11,12 @@ export default class extends AbstractView {
 
     async fetch_profile_picture(user)
     {
-        let img_target = document.getElementById('img_target')
         let img = await fetch_get(`http://localhost:4000/cdn/profile-picture/${user.username}`)
-        img_target.innerHTML = `<img style="width: 64px; height: 64px" class="rounded-full" src="data:image/jpeg;base64,${img.imgBase64}" />`;
+        if (!img.error)
+        {
+            let img_target = document.getElementById('img_target')
+            img_target.innerHTML = `<img style="width: 64px; height: 64px" class="rounded-full" src="data:image/jpeg;base64,${img.imgBase64}" />`;
+        }
     }
 
     setSettingsInfos(user)
@@ -70,21 +73,31 @@ export default class extends AbstractView {
 
             let uploaded = document.getElementById('file').files[0]
 
-            let reader = new FileReader()
-            reader.readAsDataURL(uploaded);
+            if (uploaded)
+            {
+                const { name: fileName, size: fileSize } = uploaded;
+                const fileExtension = fileName.split(".").pop();
 
-            reader.onloadend = async () => {
-                console.log(reader.result)
-                let img_target = document.getElementById('img_target')
-
-                img_target.innerHTML = '<img style="width: 64px; height: 64px" class="rounded-full" src="' + reader.result + '" />';
-
-                let data = {
-                    imgBase64: reader.result
+                if (fileExtension !== 'png' || fileSize > 5000000)
+                {
+                    notifyHandler.PushNotify('error', 'Le format doit être en .png et 3Mo maximum')
+                    return
                 }
-                // let resp = await fetch_json('http://localhost:4000/cdn/profile-picture', 'POST', data, true)
+
+                let reader = new FileReader()
+                reader.readAsDataURL(uploaded);
+
+                reader.onloadend = async () => {
+                    let img_target = document.getElementById('img_target')
+
+                    img_target.innerHTML = '<img style="width: 64px; height: 64px" class="rounded-full" src="' + reader.result + '" />';
+
+                    let data = {
+                        imgBase64: reader.result
+                    }
+                    let resp = await fetch_json('http://localhost:4000/cdn/profile-picture', 'POST', data, true)
+                }
             }
         })
     }
-
 }

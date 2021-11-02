@@ -12,28 +12,25 @@ cdnRoutes.post('/profile-picture', jwt_middleware, async (req, res) => {
     let img = req.body.imgBase64
 
     if (!img)
-        return (res.json({ error: 'img needed' }))
+        return (res.json({error: 'img needed'}))
 
     let base64Data = img.replace(/^data:image\/png;base64,/, "")
+
+    if (base64Data === img)
+        return res.json({ error: 'wrong extension' })
 
     let user = await findOne(req.decoded_token.id)
 
     if (!user)
         return res.json({error: 'wrong user'})
 
-    // if (!user.profile_img)
-    // {
-        await query(`UPDATE users SET profile_img='${user.username}-profile' WHERE username='${user.username}'`)
-        fs.writeFile(`./img/users/${user.username}/${user.username}-profile.png`, base64Data, 'base64', function(err) {
-        });
-    // }
-    // else
-    // {
-    //     console.log("faire quand ça existe deja")
-    // }
+    await query(`UPDATE users
+                 SET profile_img='${user.username}-profile'
+                 WHERE username = '${user.username}'`)
+    fs.writeFile(`./img/users/${user.username}/${user.username}-profile.png`, base64Data, 'base64', function (err) {
 
-    console.log(`${user.username}-profile created; `)
-    return res.json({success: 'profile picture updated'})
+        return res.json({success: 'profile picture updated'})
+    })
 })
 
 cdnRoutes.get('/profile-picture/:username', async (req, res) => {
@@ -62,7 +59,10 @@ cdnRoutes.post('/post', jwt_middleware, async (req, res) => {
     if (!img)
         return (res.json({error: 'img needed'}))
 
-    let base64Data = img.replace(/^data:image\/jpeg;base64,/, "")
+    let base64Data = img.replace(/^data:image\/png;base64,/, "")
+
+    if (base64Data === img)
+        return res.json({ error: 'wrong extension' })
 
     let user = await findOne(req.decoded_token.id)
 

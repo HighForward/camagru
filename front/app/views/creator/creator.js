@@ -111,6 +111,17 @@ export default class extends AbstractView {
             let uploaded = document.getElementById('file').files[0]
 
             if (uploaded) {
+
+                const { name: fileName, size: fileSize } = uploaded;
+                const fileExtension = fileName.split(".").pop();
+
+                if (fileExtension !== 'png' || fileSize > 5000000)
+                {
+                    notifyHandler.PushNotify('error', 'Le format doit être en .png et 3Mo maximum')
+                    return
+                }
+
+
                 let reader = new FileReader()
                 reader.readAsDataURL(uploaded);
 
@@ -186,17 +197,16 @@ export default class extends AbstractView {
         document.getElementById("sharebutton").addEventListener('click', e => {
 
             if (imageBase) {
-                let img = canvas.toDataURL('image/jpeg')
+                let img = canvas.toDataURL('image/png')
 
                 fetch_json('http://localhost:4000/cdn/post', 'POST', {
                     imgData: img
                 }, true).then((res) => {
-                    console.log(res)
                     if (res.success) {
                         notifyHandler.PushNotify('success', 'Montage publié avec succès')
                         setTimeout((e) => {
-                            document.location = '/'
-                        }, 2000)
+                            document.location = '/feed'
+                        }, 1000)
                     }
                 })
             }

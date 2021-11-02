@@ -45,7 +45,7 @@ export async function fetch_json(url, method, data, authJWT = false) {
     }).catch((e) => {
         if (e.error)
             return ({ error: e.error })
-        return ({ error: 'error request'})
+        return ({ error: e})
     })
 }
 

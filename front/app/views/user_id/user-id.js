@@ -24,10 +24,13 @@ export default class extends AbstractView {
         if (target_user)
         {
             let img = await fetch_get(`http://localhost:4000/cdn/profile-picture/${target_user.username}`)
-            let profile_picture = document.getElementById('profile-picture')
+            if (!img.error)
+            {
+                let profile_picture = document.getElementById('profile-picture')
+                profile_picture.innerHTML = `<img style="width: 96px; height: 96px" class="rounded-full" src="data:image/png;base64,${img.imgBase64}" />`;
+            }
 
             //todo: check if img exists
-            profile_picture.innerHTML = `<img style="width: 96px; height: 96px" class="rounded-full" src="data:image/png;base64,${img.imgBase64}" />`;
         }
     }
 
@@ -36,20 +39,21 @@ export default class extends AbstractView {
         let gallery = document.getElementById('gallery')
 
         let posts = await fetch_get(`http://localhost:4000/cdn/post/user/${target_user.username}`)
-
-        let posts_data = posts.map(async (post) => {
+        if (posts && posts.length)
+        {
+            let posts_data = posts.map(async (post) => {
                 return await fetch_get(`http://localhost:4000/cdn/post/${post.id}`)
-        })
+            })
 
-        posts_data = await Promise.all(posts_data.filter(item => { return !item.error } ))
+            posts_data = await Promise.all(posts_data.filter(item => { return !item.error } ))
 
-        gallery.innerHTML = ''
+            gallery.innerHTML = ''
 
-        console.log(posts_data)
-
-        posts_data.forEach((post) => {
+            posts_data.forEach((post) => {
                 gallery.insertAdjacentHTML('beforeend', `<img class="flex justify-center h-32 w-32" src="data:image/png;base64,${post.imgBase64}">`)
-        })
+            })
+        }
+
 
     }
 

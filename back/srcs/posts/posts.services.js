@@ -3,6 +3,7 @@ import { query } from "../mysql/mysql";
 
 export async function createPost(user) {
     let post = await query(`INSERT INTO posts(user_id) VALUES ('${user.id}')`).then((e) => e).catch(e => e)
+    console.log(post)
     return post.insertId
 }
 

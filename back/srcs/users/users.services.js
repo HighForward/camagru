@@ -3,7 +3,7 @@ import { query } from "../mysql/mysql";
 
 export async function findAll()
 {
-    return await query(`SELECT * FROM users`).then(e => {
+    return await query(`SELECT users.id, users.profile_img, users.username, users.email FROM users`).then(e => {
         return e
     }).catch(e => {
         return null
@@ -12,7 +12,7 @@ export async function findAll()
 
 export async function findOne(id)
 {
-    return await query(`SELECT * from users where id = ${id}`, false).then(e => {
+    return await query(`SELECT users.id, users.profile_img, users.username, users.email from users where id = ${id}`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})
@@ -21,7 +21,7 @@ export async function findOne(id)
 
 export async function findOneByUsername(username)
 {
-    return await query(`SELECT * from users where username = '${username}'`, false).then(e => {
+    return await query(`SELECT users.id, users.profile_img, users.username, users.email from users where username = '${username}'`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})
@@ -30,7 +30,7 @@ export async function findOneByUsername(username)
 
 export async function userExists(email)
 {
-    return await query(`SELECT * from users where email = '${email}'`, false).then(e => {
+    return await query(`SELECT users.id, users.profile_img, users.username, users.email from users where email = '${email}'`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})

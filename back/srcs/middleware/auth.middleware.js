@@ -23,7 +23,6 @@ export default function jwt_middleware(req, res, next) {
         if (err) {
             res.status(401).json({ error: 'Bad token' })
         } else {
-            // console.log('zeeez')
             req.decoded_token = decodedToken
             return next()
         }

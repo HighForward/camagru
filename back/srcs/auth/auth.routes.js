@@ -12,7 +12,7 @@ authRouter.post('/login', async (req, res) => {
         const jwt_token = jwt.sign({
             id: e.id,
             online: true
-        }, process.env.JWT_SECRET)
+        }, process.env.JWT_SECRET, { expiresIn: '1h'})
 
         return res.status(200).json({ jwt: jwt_token })
     }).catch(e => {
@@ -27,7 +27,7 @@ authRouter.post('/register', async (req, res) => {
         const jwt_token = jwt.sign({
             id: e.id,
             online: true
-        }, process.env.JWT_SECRET)
+        }, process.env.JWT_SECRET, { expiresIn: '1h'})
 
         return res.json({ jwt: jwt_token})
     }).catch(e => {
