@@ -14,12 +14,12 @@
 					<button id="sharebutton" style="background: var(--main-color)" class="flex flex-1 py-2 w-full font-semibold text-2xl justify-center hover:text-white">Partager</button>
 				</div>
 			</div>
-			<div class="flex flex-col ml-12 border-4"  style="border-color: #0a0a0a; max-height: 100%">
-				<button id="upButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color); height: 25px">Haut</button>
-				<div id="filters" class="flex flex-col flex-grow px-2 overflow-hidden" style="height: 0"></div>
-				<button id="downButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color); height: 25px">Bas</button>
+			<div class="flex flex-col ml-12 border-r-4 border-l-4" style="border-color: #0a0a0a; max-height: 100%">
+				<button id="upButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color); height: 25px">▲</button>
+				<div id="filters" class="bite flex flex-col flex-grow overflow-hidden P-2 cursor-pointer" style="height: 0"></div>
+				<button id="downButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color); height: 25px">▼</button>
 			</div>
 		</div>
 		<video id="video" width="0" height="0" autoplay></video>
 	</div>
-</div>`
+</div>

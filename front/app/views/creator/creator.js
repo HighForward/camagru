@@ -40,15 +40,8 @@ export default class extends AbstractView {
                     if (filter.focus) {
                         drawBorder(filter)
                     }
-
                     ctx.drawImage(filter.img, filter.x, filter.y, filter.width, filter.height)
                 })
-
-                // if (!isFocused)
-                //     document.body.style.cursor = 'default'
-                // else
-                //     document.body.style.cursor = 'ew-resize'
-
             }
         }
 
@@ -98,7 +91,7 @@ export default class extends AbstractView {
 
             filters_tag.forEach((tag) => {
                 filters_div.insertAdjacentHTML('beforeend',
-                    `<img crossorigin="anonymous" id='${tag}' src="http://localhost:4000/img/${tag}.png" alt="" class="w-24 h-24 my-2">`)
+                    `<img crossorigin="anonymous" id='${tag}' src="http://localhost:4000/img/${tag}.png" alt="" class="p-2 filter_class w-24 h-24">`)
 
                 document.getElementById(tag).addEventListener('click', (e) => {
 
@@ -140,30 +133,30 @@ export default class extends AbstractView {
 
         function OnBorderResize(item, img_target)
         {
-            if (item.mouse_x >= img_target.x && item.mouse_x <= img_target.x + 10 &&
-                    item.mouse_y >= img_target.y + 10 && item.mouse_y <= img_target.y + img_target.height - 10)
+            if (item.mouse_x >= img_target.x && item.mouse_x <= img_target.x + 16 &&
+                    item.mouse_y >= img_target.y + 16 && item.mouse_y <= img_target.y + img_target.height - 16)
                 return ('left')
-            if (item.mouse_x >= img_target.x + img_target.width - 10 && item.mouse_x <=  img_target.x + img_target.width &&
-                    item.mouse_y > img_target.y + 10 && item.mouse_y <= img_target.y + img_target.height - 10)
+            if (item.mouse_x >= img_target.x + img_target.width - 16 && item.mouse_x <=  img_target.x + img_target.width &&
+                    item.mouse_y > img_target.y + 16 && item.mouse_y <= img_target.y + img_target.height - 16)
                 return ('right')
-            if (item.mouse_y >= img_target.y && item.mouse_y <=  img_target.y + 10 &&
-                    item.mouse_x >= img_target.x + 10 && item.mouse_x <= img_target.x + img_target.width - 10)
+            if (item.mouse_y >= img_target.y && item.mouse_y <=  img_target.y + 16 &&
+                    item.mouse_x >= img_target.x + 16 && item.mouse_x <= img_target.x + img_target.width - 16)
                 return ('top')
-            if (item.mouse_y >= img_target.y + img_target.height - 10 && item.mouse_y <=  img_target.y + img_target.height &&
-                    item.mouse_x >= img_target.x + 10 && item.mouse_x <= img_target.x + img_target.width - 10)
+            if (item.mouse_y >= img_target.y + img_target.height - 16 && item.mouse_y <=  img_target.y + img_target.height &&
+                    item.mouse_x >= img_target.x + 16 && item.mouse_x <= img_target.x + img_target.width - 16)
                 return ('bot')
 
-            if (item.mouse_x > img_target.x && item.mouse_x < img_target.x + 10 &&
-                    item.mouse_y > img_target.y && item.mouse_y < img_target.y + 10)
+            if (item.mouse_x >= img_target.x && item.mouse_x <= img_target.x + 16 &&
+                    item.mouse_y >= img_target.y && item.mouse_y <= img_target.y + 16)
                 return ('nw')
-            if (item.mouse_x > img_target.x + img_target.width - 10 && item.mouse_x < img_target.x + img_target.width &&
-                    item.mouse_y > img_target.y && item.mouse_y < img_target.y + 10)
+            if (item.mouse_x >= img_target.x + img_target.width - 16 && item.mouse_x <= img_target.x + img_target.width &&
+                    item.mouse_y >= img_target.y && item.mouse_y <= img_target.y + 16)
                 return ('ne')
-            if (item.mouse_x > img_target.x && item.mouse_x < img_target.x + 10 &&
-                    item.mouse_y > img_target.y + img_target.height - 10 && item.mouse_y < img_target.y + img_target.height)
+            if (item.mouse_x >= img_target.x && item.mouse_x <= img_target.x + 16 &&
+                    item.mouse_y >= img_target.y + img_target.height - 16 && item.mouse_y <= img_target.y + img_target.height)
                 return ('sw')
-            if (item.mouse_x > img_target.x + img_target.width - 10 && item.mouse_x < img_target.x + img_target.width &&
-                    item.mouse_y > img_target.y + img_target.height - 10 && item.mouse_y < img_target.y + img_target.height)
+            if (item.mouse_x >= img_target.x + img_target.width - 16 && item.mouse_x <= img_target.x + img_target.width &&
+                    item.mouse_y >= img_target.y + img_target.height - 16 && item.mouse_y <= img_target.y + img_target.height)
                 return ('se')
 
             return null
@@ -248,6 +241,16 @@ export default class extends AbstractView {
             }
         }
 
+        function resetStateOnCanvas()
+        {
+            filters.forEach((filter) => {
+                filter.focus = false
+                filter.resize = null
+            })
+            document.body.style.cursor = 'default'
+            draw()
+        }
+
 
 
         canvas.onmouseup = (e) => {
@@ -281,20 +284,19 @@ export default class extends AbstractView {
                     }
                     else {
                         img_target.resize = null
-                        document.body.style.cursor = 'default'
+                        document.body.style.cursor = 'pointer'
                     }
                     draw()
                 }
                 else {
-                    document.body.style.cursor = 'default'
-                    filters.forEach((e) => {
-                        e.focus = false
-                        e.resize = null
-                    })
-                    draw()
+                    resetStateOnCanvas()
                 }
             }
         }
+
+        canvas.addEventListener ("mouseout", () => {
+            resetStateOnCanvas()
+        }, false);
 
         document.getElementById('file').addEventListener('change', (e) => {
             e.preventDefault()
@@ -343,6 +345,7 @@ export default class extends AbstractView {
             }
 
         })
+
 
         document.getElementById('upButton').addEventListener('click', (e) => {
             let filters_div = document.getElementById('filters')
@@ -413,10 +416,6 @@ export default class extends AbstractView {
             else
                 notifyHandler.PushNotify('error', 'Tu dois d\'abord uploader une image')
         })
-
-        canvas.addEventListener ("mouseout", () => {
-            document.body.style.cursor = 'default'
-        }, false);
     }
 
 }

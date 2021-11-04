@@ -77,7 +77,6 @@ export default class extends AbstractView {
                         }
                     })
 
-                    this.GetElementInsideContainer(`post-${i}`, `comments`).insert
 
                     this.GetElementInsideContainer(`post-${i}`, 'commentButton').addEventListener('click', () => {
                         if (user)

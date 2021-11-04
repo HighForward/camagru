@@ -5,6 +5,7 @@ import usersRouter from './srcs/users/users.routes'
 import authRouter from './srcs/auth/auth.routes'
 import cdnRouter from './srcs/cdn/cdn.routes'
 import commentsRoutes from "./srcs/comments/comments.routes";
+import nodemailer from 'nodemailer'
 
 const allowedOrigins = ['http://localhost'];
 

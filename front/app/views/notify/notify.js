@@ -17,10 +17,10 @@ export default class {
         let to_add = document.getElementById(`notif-${0}`)
         let where = curr_nb === 1 ? 'afterbegin' : 'beforeend'
 
-        to_add.insertAdjacentHTML(where, `<div id="notif-${curr_nb}" style="color: white;" class="flex items-center h-8 justify-center mt-2 rounded">${message}</div>`)
+        to_add.insertAdjacentHTML(where, `<div id="notif-${curr_nb}" style="color: white;" class="flex items-center h-8 justify-center mt-2 p-4 rounded">${message}</div>`)
 
         let item = document.getElementById(`notif-${curr_nb}`)
-        item.style.width = '400px'
+        // item.style.width = '400px'
         if ((state === 'success'))
             item.style.background = '#2ECC71'
         else

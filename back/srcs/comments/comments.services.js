@@ -21,7 +21,7 @@ export async function createOne(body, decoded_token)
 
 export async function getOneComment(id)
 {
-    return await query(`SELECT comments.id, comments.comment, comments.user_id, comments.post_id, users.username, users.id FROM comments INNER JOIN users ON comments.user_id = users.id WHERE comments.id = ${id}`, false).then((comments) => {
+    return await query(`SELECT comments.id, comments.comment, comments.user_id, comments.post_id, users.username, users.email, users.id FROM comments INNER JOIN users ON comments.user_id = users.id WHERE comments.id = ${id}`, false).then((comments) => {
         return comments
     }).catch((e) => {
         return null })

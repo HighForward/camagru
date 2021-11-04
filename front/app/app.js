@@ -10,6 +10,8 @@ import notify from "./views/notify/notify.js";
 import profil_settings from "./views/settings/profil_settings.js";
 import user_id from "./views/user_id/user-id.js";
 import header from "./views/header/header.js";
+import validate from "./views/validate/validate.js";
+import lostPassword from "./views/lostpassword/lostpassword.js";
 
 let online_state = false
 export let app_header = new header()
@@ -22,6 +24,8 @@ export const routes = [
     {path: "/creator", file_path: "views/creator/creator.html", view: creator},
     {path: "/settings", file_path: 'views/settings/settings.html', view: profil_settings},
     {path: "/user", file_path: 'views/user_id/user_id.html', view: user_id},
+    {path: "/validate", file_path: 'views/validate/validate.html', view: validate},
+    {path: "/lostpassword", file_path: 'views/lostpassword/lostpassword.html', view: lostPassword},
 ];
 
 function perform_routing()
@@ -32,6 +36,11 @@ function perform_routing()
     if (split_route && split_route.length === 2 && split_route[0] === 'user') {
         match = routes.find((e) => e.path === '/user')
     }
+
+    if (split_route && split_route.length === 2 && split_route[0] === 'validate') {
+        match = routes.find((e) => e.path === '/validate')
+    }
+
     let view = new error({error: '404'})
     if (match)
         view = new match.view(match)

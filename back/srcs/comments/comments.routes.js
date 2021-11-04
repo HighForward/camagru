@@ -1,6 +1,7 @@
 import express from 'express'
 import jwt_middleware from "../middleware/auth.middleware";
 import {createOne, findAll, getOneComment, getPostComments} from "./comments.services";
+import {sendMail} from "../mailer/mailer.services";
 
 const commentsRoutes = express.Router()
 
@@ -17,11 +18,14 @@ commentsRoutes.post('/',  jwt_middleware, async (req, res) => {
         return res.json({error: 'Missing values'})
 
     let item = await createOne(req.body, req.decoded_token)
-    // console.log(item)
     if (item) {
         let newed_post = await getOneComment(item.insertId)
-        if (newed_post)
+        if (newed_post) {
+            //todo envoyer email au proprio du post
+            console.log('sendMail')
+            // await sendMail()
             return res.json(newed_post)
+        }
     }
     return res.json({error: 'Can\'t comment this post' })
 })

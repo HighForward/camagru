@@ -78,7 +78,7 @@ export default class extends AbstractView {
                 const { name: fileName, size: fileSize } = uploaded;
                 const fileExtension = fileName.split(".").pop();
 
-                if (fileExtension !== 'png' || fileSize > 5000000)
+                if ((fileExtension !== 'png' && fileExtension !== 'PNG') || fileSize > 5000000)
                 {
                     notifyHandler.PushNotify('error', 'Le format doit être en .png et 3Mo maximum')
                     return

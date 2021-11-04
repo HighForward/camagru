@@ -39,10 +39,14 @@ async function perform_register(e) {
     }
     else
     {
-        localStorage.setItem('jwt', `${res.jwt}`);
-        document.location.href = '/feed'
+        notifyHandler.PushNotify('success', `Un email de confirmation t'as été envoyé à ${res.email}`)
     }
+    // else
+    // {
+    //     localStorage.setItem('jwt', `${res.jwt}`);
+    //     document.location.href = '/feed'
+    // }
 
-    return false
+    // return false
 }
 

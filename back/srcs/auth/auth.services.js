@@ -1,40 +1,47 @@
 import {query} from "../mysql/mysql";
 import {createUser} from "../users/users.services";
 import fs from "fs";
+import inputValidator from "../inputValidator/inputValidator";
 
 export async function log_in(data)
 {
-    let {username, password } = data
+    let { username, password } = data
 
-    if (!username || username.length <= 3 || username.length > 30 || !password || password.length < 3 || username.length > 30)
-        throw ({ error: 'username or password: wrong format' })
+    let validator = new inputValidator('', username, password)
+
+    let state = validator.checkValueLogin()
+    if (!state.success)
+        throw ({ error: state.error})
 
     const user = await query(`SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`, false)
 
+    if (user && user.validate === 0)
+        throw ({ error: 'Tu dois d\'abord faire vérifier ton adresse mail.' })
     if (user)
         return user
     else
-        throw ({ error: 'Wrong username/email or password'})
+        throw ({ error: 'Nom d\'utilisateur ou mot de passe incorrect' })
 }
 
-export async function register(data)
+export async function register(body)
 {
-    let { email, username, password } = data
+    let { email, username, password, confirm_password} = body
 
-    if (!username || username.length <= 3 || username.length > 30 || !password || password.length < 3 || password.length > 30
-        || !email || email.length < 3 || email.length > 30)
+    let validator = new inputValidator(email, username, password, confirm_password)
 
-        throw ({ error: 'username or password: wrong format' })
+    let state = validator.checkValueRegister()
+    if (!state.success)
+        throw ({ error: state.error })
 
-    const user = await createUser(data).then(e => {
+    const user = await createUser(body).then(e => {
         return e
     }).catch(e => {
         throw ({ error: e.error })
     })
 
-    fs.mkdir(`./img/users/${user.username}`, {recursive: true}, (e) => {
-        console.log(e)
+    fs.mkdir(`./img/users/${user.id}`, {recursive: true}, (e) => {
+        // console.log(e)
     })
 
     return user
-    }
+}

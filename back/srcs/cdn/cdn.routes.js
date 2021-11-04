@@ -25,9 +25,9 @@ cdnRoutes.post('/profile-picture', jwt_middleware, async (req, res) => {
         return res.json({error: 'wrong user'})
 
     await query(`UPDATE users
-                 SET profile_img='${user.username}-profile'
+                 SET profile_img='${user.id}-profile'
                  WHERE username = '${user.username}'`)
-    fs.writeFile(`./img/users/${user.username}/${user.username}-profile.png`, base64Data, 'base64', function (err) {
+    fs.writeFile(`./img/users/${user.id}/${user.id}-profile.png`, base64Data, 'base64', function (err) {
 
         return res.json({success: 'profile picture updated'})
     })
@@ -44,7 +44,7 @@ cdnRoutes.get('/profile-picture/:username', async (req, res) => {
 
     if (user.profile_img) {
 
-        const contents = fs.readFileSync(`img/users/${user.username}/${user.username}-profile.png`, {encoding: 'base64'});
+        const contents = fs.readFileSync(`img/users/${user.id}/${user.id}-profile.png`, {encoding: 'base64'});
         return res.json({imgBase64: contents})
     }
 
@@ -73,9 +73,9 @@ cdnRoutes.post('/post', jwt_middleware, async (req, res) => {
     if (imgId)
     {
         await query(`UPDATE posts
-                     SET img_path = '${user.username}-post-${imgId}.png'
+                     SET img_path = '${user.id}-post-${imgId}.png'
                      WHERE id = ${imgId}`)
-        fs.writeFile(`./img/users/${user.username}/${user.username}-post-${imgId}.png`, base64Data, 'base64', function(err) {
+        fs.writeFile(`./img/users/${user.id}/${user.id}-post-${imgId}.png`, base64Data, 'base64', function(err) {
         });
         return res.json({ success: 'Post created' })
     }
@@ -112,7 +112,7 @@ cdnRoutes.get('/post/:id', async (req, res) => {
         const user = await findOne(post.user_id)
         if (user.error)
             return res.json({ error: 'wrong user_id' })
-        const contents = fs.readFileSync(`img/users/${user.username}/${user.username}-post-${post.id}.png`, {encoding: 'base64'});
+        const contents = fs.readFileSync(`img/users/${user.id}/${user.id}-post-${post.id}.png`, {encoding: 'base64'});
 
         post.imgBase64 = contents
         post.author = user.username

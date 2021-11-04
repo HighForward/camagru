@@ -66,7 +66,6 @@ export default class extends AbstractView {
         })
 
         if (!target_user || target_user.error) {
-
             document.location.href = '/'
             return
         }
