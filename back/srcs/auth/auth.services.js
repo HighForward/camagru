@@ -1,5 +1,6 @@
 import {query} from "../mysql/mysql";
 import {createUser} from "../users/users.services";
+import bcrypt from 'bcryptjs';
 import fs from "fs";
 import inputValidator from "../inputValidator/inputValidator";
 
@@ -13,14 +14,20 @@ export async function log_in(data)
     if (!state.success)
         throw ({ error: state.error})
 
-    const user = await query(`SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`, false)
+    const user = await query(`SELECT * FROM users WHERE username = '${username}'`, false)
+
+    if (!user)
+        throw ({ error: 'Nom d\'utilisateur ou mot de passe incorrect' })
+
+    const match = await bcrypt.compare(password, user.password)
+
+    if (!match)
+        throw ({ error: 'Nom d\'utilisateur ou mot de passe incorrect' })
 
     if (user && user.validate === 0)
         throw ({ error: 'Tu dois d\'abord faire vérifier ton adresse mail.' })
-    if (user)
-        return user
-    else
-        throw ({ error: 'Nom d\'utilisateur ou mot de passe incorrect' })
+
+    return user
 }
 
 export async function register(body)
@@ -32,6 +39,12 @@ export async function register(body)
     let state = validator.checkValueRegister()
     if (!state.success)
         throw ({ error: state.error })
+
+    body.password = await bcrypt.hash(password, 10).then((hash) => {
+        return hash
+    })
+
+    console.log(body.password)
 
     const user = await createUser(body).then(e => {
         return e

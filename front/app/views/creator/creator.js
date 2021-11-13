@@ -11,7 +11,7 @@ export default class extends AbstractView {
     async getView(user, target_user) {
 
         if (!user)
-            document.location.href = '/'
+            document.location.href = '/login'
 
         super.getView()
         await this.getHtml()
@@ -95,7 +95,7 @@ export default class extends AbstractView {
 
                 document.getElementById(tag).addEventListener('click', (e) => {
 
-                    if (!imageBase) {
+                    if (!imageBase && !videoBase) {
                         notifyHandler.PushNotify('error', 'Tu n\'as pas de photo sélectonné')
                         return
                     }
@@ -323,10 +323,11 @@ export default class extends AbstractView {
                     imageBase.src = reader.result;
                     imageBase.onload = () => {
 
+                        console.log('ok??')
+                        filters.splice(0, filters.length)
+
                         if (videoBase) {
                             stopTrackCamera()
-                            filters.splice(0, filters.length)
-
                             videoBase = undefined
                             if (cameraButtonState === 1) {
                                 cameraButtonState = 0
@@ -359,14 +360,27 @@ export default class extends AbstractView {
 
         camera_button.addEventListener('click', async function() {
 
-            filters.splice(0, filters.length)
+
             draw()
             if (cameraButtonState === 0)
             {
+                filters.splice(0, filters.length)
                 if (imageBase)
                     imageBase = undefined
                 let video = document.querySelector("#video");
-                video.srcObject = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
+
+
+
+
+                video.srcObject = await navigator.mediaDevices.getUserMedia({video: true, audio: false}).catch(e => {
+                    return null
+                });
+
+                if (video.srcObject === null)
+                {
+                    notifyHandler.PushNotify('error', 'Impossible d\'utiliser la caméra')
+                    return
+                }
 
                 videoBase = video
                 videoInterval = setInterval((e) => {

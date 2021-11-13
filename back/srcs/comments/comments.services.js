@@ -34,3 +34,11 @@ export async function getPostComments(id)
     }).catch((e) => {
         return null })
 }
+
+export async function getCommentsFromUser(id)
+{
+    return await query(`SELECT * FROM comments WHERE user_id = ${id}`, true).then((comments) => {
+        return comments.length
+    }).catch((e) => {
+        return null })
+}

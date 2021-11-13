@@ -52,7 +52,11 @@ const router = async () => {
     let {view, target_user} = perform_routing()
 
     let user = await isUserOnline(online_state)
+    // app_header.getView(user)
+
+    app_header.createSideBar(user)
     app_header.updateOnlineStateHeader(user)
+
 
     await view.getView(user, target_user)
 }

@@ -15,10 +15,12 @@ export default class inputValidator
 
     }
 
-    isValidPassword()
+    isValidPassword(pswd)
     {
         let password_regex = /^[A-Za-z]\w{2,14}$/
 
+        if (pswd)
+            return password_regex.test(pswd)
         return password_regex.test(this.password)
     }
 
@@ -66,8 +68,8 @@ export default class inputValidator
         if (!this.isValidUsername())
             return ({error: 'le nom d\'utilisateur est incorrect'})
 
-        if (!this.isValidPassword())
-            return ({ error: 'le mot de passe est incorrect' })
+        // if (!this.isValidPassword())
+        //     return ({ error: 'le mot de passe est incorrect' })
 
         return ({ success: 'Information corrects '})
     }

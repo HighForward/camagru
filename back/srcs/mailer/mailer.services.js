@@ -26,34 +26,43 @@ let mailOptions = {
     text: 'That was easy!'
 };
 
-function getTextFromMailType(user, mail_type)
+function getTextFromMailType(mail_type, data)
 {
     // console.log(mail_type)
-    if (mail_type === MAIL_TYPE.REGISTER)
+    if (mail_type === MAIL_TYPE.REGISTER && data)
     {
         return `<div>` +
         `<p>Pour finir de t'enregistrer et profiter à fond de camagru, clique sur ce lien:</p>` +
-        `<p>http://localhost:80/validate/${user.uuid}</p>` +
+        `<p>http://localhost:80/validate/${data.uuid}</p>` +
         `</div>`
     }
 
     if (mail_type === MAIL_TYPE.RESET)
     {
+        console.log(data)
         return `<div>` +
             `<p>Pour definir un nouveau mot de passe, clique sur ce lien</p>` +
-            // `<p>http://localhost:80/reset/${user.uuid}</p>` +
+            `<p>http://localhost:80/reset/${data.reset_uuid}</p>` +
             `</div>`
+    }
+
+    if (mail_type === MAIL_TYPE.COMMENT && data)
+    {
+        return `<div>` +
+            `<p>Vous avez un nouveau commentaire de la part de ${data.username}:</p>` +
+            `<p>${data.comment}</p>` +
+        `</div>`
     }
 }
 
-export async function sendMail(email, user, mail_type)
+export async function sendMail(email, mail_type, data)
 {
     try {
         await transporter.sendMail({
             from: process.env.MAIL_APP,
             to: email,
             subject: mail_type.subject,
-            html: getTextFromMailType(user, mail_type)
+            html: getTextFromMailType(mail_type, data)
         })
         return true
     } catch (e) {

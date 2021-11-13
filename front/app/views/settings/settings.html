@@ -1,36 +1,43 @@
-<div id='profil_div' class="flex justify-center w-full" style="background: #181818">
-	<div id="info_panel" class="flex rounded flex-col w-xl max-w-xl m-4 flex-1 items-center" style="background: var(--primary-color)">
-		<div id="header" class="flex w-full justify-around items-center border-b py-2">
-			<a id="backProfile" href="" class=" left-0 text-sm" style="left: 25px; color: var(--main-color)" data-link="">Retour au profil</a>
+<div id='profil_div' class="flex justify-center" style="background: var(--secondary-color); min-height: calc(100vh - var(--header-size))">
+	<div class="pt-8 settings sm:text-sm" style="">
+	<div id="info_panel" class="rounded items-center flex-col" style="background: var(--primary-color)">
+		<div id="header" class="flex justify-around items-center border-b py-4">
+			<a id="backProfile" href="" style="color: var(--main-color)" data-link="">Retour au profil</a>
 			<h1 class="text-white">Paramètre de profil</h1>
 		</div>
-		<form id="settings_form" class="flex pt-4 flex-col">
-			<div id="header_info" class="flex flex-row items-center justify-between py-4">
-				<div id="header_photo" class="flex flex-col">
-					<div id="img_target" class="rounded-full border" style="width: 64px; height: 64px"></div>
+		<form id="settings_form" class="flex p-8 flex-col">
+			<div id="header_info" class="flex flex-row items-center justify-between">
+				<div id="header_photo" class="flex">
+					<div id="img_target" class="rounded-full border" style="width: 128px; height: 128px"></div>
 				</div>
 				<input class="opacity-0 w-0 h-0 absolute" type="file" id="file" accept="image/png">
-				<label class="flex items-center w-48 h-8 border-gray-400 rounded justify-center hover:text-white cursor-pointer" style="background: #2ECC71;" for="file">Select file</label>
+				<label class="flex items-center rounded justify-center hover:text-white cursor-pointer px-2 py-1 " style="background: #2ECC71;" for="file">Choisir une image</label>
 			</div>
 
-			<div class="flex flex-row justify-between">
-				<div class="text-white">Nom d’utilisateur</div>
-				<input id="username" class="ml-4 border w-48 pl-1" placeholder="" value="">
+			<div class="flex sm:flex-row flex-col justify-between mt-4">
+				<label for="username" class="flex pr-4 items-center text-white">Nom d’utilisateur</label>
+				<input id="username" class=" border inputSettings" placeholder="" value="">
 			</div>
-			<div class="text-sm text-gray-400">Aidez les gens à vous retrouver à l\'aide de ce nom.</div>
+			<div class="text-gray-400 pb-4">Aidez les gens à vous retrouver à l'aide de ce nom.</div>
 
-			<div class="flex flex-row justify-between pt-8">
-				<div class="text-white">Email</div>
-				<input id="email" class="ml-4 border w-48 pl-1" placeholder="" value="">
+			<div class="flex sm:flex-row flex-col justify-between">
+				<label for="email" class="flex pr-4 items-center text-white">Email</label>
+				<input id="email" class=" border inputSettings" placeholder="" value="">
 			</div>
-			<div class="text-sm text-gray-400">Adresse de contact.</div>
+			<div class="text-gray-400 pb-4">Adresse de contact.</div>
 
-			<div class="flex flex-row justify-between pt-8">
-				<div class="text-white">Mot de passe</div>
-				<input type="password" id="password" class="ml-4 border w-48 pl-1">
+			<div class="flex sm:flex-row flex-col justify-between">
+				<label for="password" class="flex pr-4 items-center text-white">Mot de passe</label>
+				<input type="password" id="password" class=" border inputSettings">
 			</div>
-			<div class="text-sm text-gray-400">Gardez celui-ci secret.</div>
-			<button style="color: var(--main-color)" class="border my-8 rounded-md border-text hover:text-primary hover:bg-stroke flex bg-primary text-light w-full items-center font-medium justify-center py-4">Modifier</button>
+			<div class="text-gray-400 pb-4">Gardez celui-ci secret.</div>
+
+			<div class="flex items-center pb-4">
+				<input id="mailoncomments" type="checkbox" checked>
+				<label for="mailoncomments" class="text-white pl-2">Me notifier par mail à chaque nouveaux commentaires</label>
+			</div>
+			<button style="color: var(--main-color)" class="border p-4 rounded-md border-text hover:text-primary hover:bg-stroke flex bg-primary text-light w-full items-center font-medium justify-center">Modifier</button>
 		</form>
+	</div>
 	</div>
 </div>

@@ -40,8 +40,7 @@ export async function findOneByUsername(username)
 
 export async function findOneByEmail(email)
 {
-    console.log(email)
-    return await query(`SELECT users.id, users.profile_img, users.username, users.email, users.uuid from users where email = '${email}'`, false).then(e => {
+    return await query(`SELECT users.id, users.reset_uuid, users.profile_img, users.validate, users.username, users.email, users.uuid from users where email = '${email}'`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})
@@ -74,18 +73,19 @@ export async function createUser(payload)
             return null
         })
     }
-    throw ({ error: 'Username or email already registered' })
+    throw ({ error: 'Nom d\'utilisateur ou email déjà utilisé' })
 }
 
 export async function updateUser(req)
 {
-    let {username, password, email} = req.body
+    let {username, password, email, mailer} = req.body
 
     let user = await findOneSecretInside(req.decoded_token.id)
 
     if (!user || user.error)
         return ({ error: 'Updating error' })
 
+    console.log(mailer)
 
     let validator = new inputValidator(email, username, password)
     let state = validator.checkValueUpdate()
@@ -113,9 +113,12 @@ export async function updateUser(req)
             await query(`UPDATE users SET email = '${email}' WHERE id = ${req.decoded_token.id}`)
     }
 
-    if (password) {
+    if (password && validator.isValidPassword(password))
         await query(`UPDATE users SET password = '${password}' WHERE id = ${req.decoded_token.id}`)
-    }
+
+    console.log(mailer, Boolean(user.mailer))
+    if (mailer !== Boolean(user.mailer))
+        await query(`UPDATE users SET mailer = ${mailer} WHERE id = ${req.decoded_token.id}`)
 
     return ({ success: 'Informations mise à jour' })
 }

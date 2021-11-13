@@ -121,4 +121,17 @@ cdnRoutes.get('/post/:id', async (req, res) => {
     return res.json({ error: 'Inexisting post' })
 })
 
+cdnRoutes.delete('/post/:id', async (req, res) => {
+    if (!req.params.id)
+        return res.json({error: 'wrong param'})
+
+    const post = await findOnePost(req.params.id)
+    if (post) {
+        await query(`DELETE FROM posts WHERE id = ${post.id}`)
+        return res.json({success: 'post deleted' })
+    }
+    return res.json({error: 'wrong post' })
+
+})
+
 export default cdnRoutes

@@ -26,7 +26,7 @@ authRouter.post('/login', async (req, res) => {
 authRouter.post('/register', async (req, res) => {
     return await register(req.body).then(user => {
 
-        if (!sendMail(user.email, user, MAIL_TYPE.REGISTER))
+        if (!sendMail(user.email, MAIL_TYPE.REGISTER, user))
             console.log('weird email')
 
         return res.json({ email: user.email})
@@ -65,16 +65,18 @@ authRouter.post('/reset', async (req, res) => {
     let validator = new inputValidator(email, '', '')
 
     if (!validator.isValidEmail())
-        return res.json({ error: 'Email invalid' })
+        return res.json({ error: 'Adresse email invalide' })
 
     let user = await findOneByEmail(email)
-    console.log(user)
-    if (user && !user.error)
+    if (user && !user.error && user.validate)
     {
-        //todo generate token, create route on front to change password
-        await sendMail(email, user, MAIL_TYPE.RESET)
+        await query(`UPDATE users SET reset_uuid = UUID() WHERE id = ${user.id}`)
+
+        sendMail(email, MAIL_TYPE.RESET, user)
+        return res.json({ success: 'Un email à été envoyé à l\'adresse indiqué' })
     }
-    return res.json({ success: 'Un email à été envoyé à l\'adresse indiqué' })
+    return res.json({ error: 'Cette adresse email semble inconnue ...' })
+
 })
 
 export default authRouter

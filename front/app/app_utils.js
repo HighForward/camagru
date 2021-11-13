@@ -61,6 +61,9 @@ export async function fetch_get(url) {
     }).then(async (res) => {
         return res.json()
     }).catch((e) => {
+
+        console.log(e)
+
         return ({ error: 'error request'})
     })
 }

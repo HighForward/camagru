@@ -5,7 +5,7 @@ import usersRouter from './srcs/users/users.routes'
 import authRouter from './srcs/auth/auth.routes'
 import cdnRouter from './srcs/cdn/cdn.routes'
 import commentsRoutes from "./srcs/comments/comments.routes";
-import nodemailer from 'nodemailer'
+import likesRoutes from "./srcs/likes/likes.routes";
 
 const allowedOrigins = ['http://localhost'];
 
@@ -24,6 +24,7 @@ app.use('/users', usersRouter)
 app.use('/auth', authRouter)
 app.use('/cdn', cdnRouter)
 app.use('/comments', commentsRoutes)
+app.use('/likes', likesRoutes)
 
 app.get('/', (req, res) => {
     return res.json({ success: "Camagru API alive" })

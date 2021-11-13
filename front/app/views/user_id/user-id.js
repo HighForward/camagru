@@ -15,7 +15,7 @@ export default class extends AbstractView {
         {
             let header_profile =  document.getElementById('header_profile')
 
-            header_profile.insertAdjacentHTML('beforeend', `<a href="/settings" class="flex items-center justify-center hover:text-white bg-gray-200 px-2 rounded" data-link>Settings</a>`)
+            header_profile.insertAdjacentHTML('beforeend', `<a href="/settings" class="flex items-center justify-center hover:text-white bg-gray-200 p-1 px-2 rounded" data-link>Settings</a>`)
         }
     }
 
@@ -27,11 +27,24 @@ export default class extends AbstractView {
             if (!img.error)
             {
                 let profile_picture = document.getElementById('profile-picture')
-                profile_picture.innerHTML = `<img style="width: 96px; height: 96px" class="rounded-full" src="data:image/png;base64,${img.imgBase64}" />`;
+                if (profile_picture)
+                    profile_picture.innerHTML = `<img style="object-fit: cover;" class="profile_picture_img rounded-full" src="data:image/png;base64,${img.imgBase64}" />`;
             }
-
-            //todo: check if img exists
         }
+    }
+
+    async createDivPost(post)
+    {
+        if (post && post.id && post.imgBase64) {
+            let div = document.createElement('div')
+            div.id = `post-wrap-${post.id}`
+            div.className += 'img-wrap z-10'
+
+            div.insertAdjacentHTML('beforeend', `<button id="delete-post-${post.id}" class="close flex items-center justify-center h-4 w-4 font-bold text-red-400 z-10">&times;</button>`)
+            div.insertAdjacentHTML('beforeend', `<img class="relative flex justify-center deletePost w-full" style="" src="data:image/png;base64,${post.imgBase64}">`)
+            return div
+        }
+        return null
     }
 
     async setPosts(target_user)
@@ -39,22 +52,59 @@ export default class extends AbstractView {
         let gallery = document.getElementById('gallery')
 
         let posts = await fetch_get(`http://localhost:4000/cdn/post/user/${target_user.username}`)
-        if (posts && posts.length)
-        {
+        console.log(posts)
+        if (posts && posts.length) {
             let posts_data = posts.map(async (post) => {
                 return await fetch_get(`http://localhost:4000/cdn/post/${post.id}`)
             })
 
-            posts_data = await Promise.all(posts_data.filter(item => { return !item.error } ))
+
+            posts_data = await Promise.all(posts_data.filter(item => {
+                return !item.error
+            }))
 
             gallery.innerHTML = ''
 
-            posts_data.forEach((post) => {
-                gallery.insertAdjacentHTML('beforeend', `<img class="flex justify-center h-32 w-32" src="data:image/png;base64,${post.imgBase64}">`)
-            })
+            for (const post of posts_data) {
+
+                let createdPost = await this.createDivPost(post)
+                if (createdPost) {
+
+                    gallery.appendChild(createdPost)
+
+                    document.getElementById(`delete-post-${post.id}`).addEventListener('click', async () => {
+                        await fetch(`http://localhost:4000/cdn/post/${post.id}`, {
+                            method: 'DELETE',
+                            headers: new Headers({
+                                "Content-Type": "application/json"
+                            })
+                        }).then(async e => {
+
+                            let res = await e.json()
+                            console.log(res)
+                            if (res.success) {
+                                let toDelete = document.getElementById(`post-wrap-${post.id}`)
+                                toDelete.parentNode.removeChild(toDelete)
+                            }
+                        })
+                    })
+                }
+            }
+
+            // gallery.appendChild(await createPost())
         }
+        else
+        {}
 
 
+    }
+
+    getStats(user)
+    {
+        const stats = document.getElementById('stats')
+        stats.insertAdjacentHTML('beforeend', `<div>${user.likes} likes 👍</div>`)
+        stats.insertAdjacentHTML('beforeend', `<div>${user.posts} postes 🖼</div>`)
+        stats.insertAdjacentHTML('beforeend', `<div>${user.comments} commentaires 💬</div>`)
     }
 
     async getView(user, param) {
@@ -78,6 +128,8 @@ export default class extends AbstractView {
         await this.setProfilePicture(target_user)
 
         await this.setPosts(target_user)
+
+        await this.getStats(target_user)
 
     }
 

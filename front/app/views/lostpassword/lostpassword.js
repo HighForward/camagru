@@ -24,6 +24,10 @@ export default class extends AbstractView {
             let data = {
                 email: input
             }
+
+            if (!data.email || !data.email.length)
+                return
+
             let res = await fetch_json('http://localhost:4000/auth/reset', 'POST', data)
             console.log(res)
             if (res.error)

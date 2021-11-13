@@ -24,13 +24,83 @@ export default class extends AbstractView {
     {
         return `
         <div class="flex flex-row w-full">
-            <a href='/user/${comment.username}' class="flex mx-2 font-bold text-white">${comment.username}</a>
+            <a href='/user/${comment.username}' class="flex mx-2 font-bold text-white" data-link>${comment.username}</a>
             <div class="flex-1 ml-2" style="color: white">${comment.comment}</div>
-            <button class="flex flex-initial mr-2 text-red-500 w-8 h-8 font-bold text-3xl items-center justify-center">
-                ♥
-            </button>
         </div>
         `
+    }
+
+    fetchLikeButton(post, user, i)
+    {
+
+        let likeButton = this.GetElementInsideContainer(`post-${i}`, 'likeButton')
+
+        let setValue = (value) => {
+            if (value === true)
+                likeButton.innerHTML = 'Je n\'aime plus 💔'
+            else if (value === false)
+                likeButton.innerHTML = 'J\'aime ♥'
+        }
+
+        if (user) {
+            fetch_json('http://localhost:4000/likes/isliked', 'POST', {
+                post_id: post.id,
+                user_id: user.id
+            }, true).then((e) => {
+                if (!e.error)
+                    setValue(e)
+            })
+        }
+
+        likeButton.addEventListener('click', () => {
+
+            if (!user) {
+                notifyHandler.PushNotify('error', `Tu dois te connecter pour aimer une photo`)
+                return
+            }
+
+            fetch_json('http://localhost:4000/likes', 'POST', {
+                post_id: post.id,
+                user_id: user.id
+            }, true).then(e => {
+                if (!e.error)
+                    setValue(e)
+            })
+        })
+    }
+
+    async fetchComments(post, i) {
+        fetch_get(`http://localhost:4000/comments/post/${post.id}`).then((e) => {
+            if (e) {
+                let commentsDiv = this.GetElementInsideContainer(`post-${i}`, `comments`)
+                e.forEach((e) => {
+                    commentsDiv.insertAdjacentHTML('beforeend', this.getCommentHtml(e))
+                })
+            }
+        })
+    }
+
+    async performComments(post, user, i)
+    {
+        this.GetElementInsideContainer(`post-${i}`, 'commentButton').addEventListener('click', () => {
+            if (user) {
+                let commentInput = this.GetElementInsideContainer(`post-${i}`, 'commentInput')
+                fetch_json('http://localhost:4000/comments', 'POST', {
+                    comment: commentInput.value,
+                    post_id: post.id
+                }, true)
+                    .then((postback) => {
+                        if (postback.error)
+                            return null
+
+                        let comment_container = this.GetElementInsideContainer(`post-${i}`, 'comments')
+                        comment_container.insertAdjacentHTML('beforeend', this.getCommentHtml(postback))
+                        commentInput.value = ''
+                    })
+                }
+                else
+                    notifyHandler.PushNotify('error', 'Tu dois te connecter pour commenter un poste')
+        })
     }
 
     async getView(user) {
@@ -40,6 +110,7 @@ export default class extends AbstractView {
 
         let posts = await fetch_get('http://localhost:4000/cdn/post')
 
+
         if (posts && posts.length)
         {
             let postNode = await fetch(`http://localhost/views/feed/post.html`).then(async (res) => {
@@ -48,6 +119,8 @@ export default class extends AbstractView {
                 let doc = parser.parseFromString(text, "text/html");
                 return (doc.body.firstChild)
             })
+
+            posts.reverse()
 
             for (let i = 0; i < posts.length; i++)
             {
@@ -63,41 +136,18 @@ export default class extends AbstractView {
                     post_id.id = `post-${i}`
 
                     post_id.appendChild(postNode.cloneNode(true))
-                    document.getElementById('feedContainer').insertAdjacentElement('afterbegin', post_id)
+                    document.getElementById('feedContainer').insertAdjacentElement('beforeend', post_id)
 
                     this.GetElementInsideContainer(`post-${i}`, 'post_user').innerHTML = `<a href='/user/${post_img.author}'>${post_img.author}</a>`
                     this.GetElementInsideContainer(`post-${i}`, 'imgFeed').src = img
 
-                    fetch_get(`http://localhost:4000/comments/post/${post.id}`).then((e) => {
-                        if (e) {
-                            let commentsDiv = this.GetElementInsideContainer(`post-${i}`, `comments`)
-                            e.forEach((e) => {
-                                commentsDiv.insertAdjacentHTML('beforeend', this.getCommentHtml(e))
-                            })
-                        }
-                    })
+                    await this.fetchLikeButton(post, user, i)
+
+                    await this.fetchComments(post, i)
+
+                    await this.performComments(post, user, i)
 
 
-                    this.GetElementInsideContainer(`post-${i}`, 'commentButton').addEventListener('click', () => {
-                        if (user)
-                        {
-                            let commentInput = this.GetElementInsideContainer(`post-${i}`, 'commentInput')
-                            let comment = fetch_json('http://localhost:4000/comments', 'POST', {
-                                comment: commentInput.value,
-                                post_id: post.id
-                            }, true).then((postback) => {
-                                console.log(postback)
-                                if (postback.error)
-                                    return null
-
-                                let comment_container = this.GetElementInsideContainer(`post-${i}`, 'comments')
-                                comment_container.insertAdjacentHTML('beforeend', this.getCommentHtml(postback))
-                                commentInput.value = ''
-                            })
-                        }
-                        else
-                            notifyHandler.PushNotify('error', 'Tu doit être connecté pour commenter un poste')
-                })
 
                 }
             }

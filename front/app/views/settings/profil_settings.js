@@ -15,7 +15,7 @@ export default class extends AbstractView {
         if (!img.error)
         {
             let img_target = document.getElementById('img_target')
-            img_target.innerHTML = `<img style="width: 64px; height: 64px" class="rounded-full" src="data:image/jpeg;base64,${img.imgBase64}" />`;
+            img_target.innerHTML = `<img style="width: 128px; height: 128px" class="rounded-full" src="data:image/jpeg;base64,${img.imgBase64}" />`;
         }
     }
 
@@ -51,10 +51,12 @@ export default class extends AbstractView {
 
             if (e.preventDefault) e.preventDefault()
 
+
             let data = {
                 username: document.getElementById('username').value,
                 email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                mailer: document.getElementById('mailoncomments').checked
             }
 
             fetch_json('http://localhost:4000/users/update', 'POST', data, true).then((e) => {
@@ -66,6 +68,11 @@ export default class extends AbstractView {
             }).catch((e) => {
                 console.log('error', e)
             })
+        })
+
+        let mailer = document.getElementById('mailoncomments')
+        await fetch_get('http://localhost:4000/users/mailer').then((val) => {
+            mailer.checked = val
         })
 
         document.getElementById('file').addEventListener('change', (e) => {
@@ -90,7 +97,7 @@ export default class extends AbstractView {
                 reader.onloadend = async () => {
                     let img_target = document.getElementById('img_target')
 
-                    img_target.innerHTML = '<img style="width: 64px; height: 64px" class="rounded-full" src="' + reader.result + '" />';
+                    img_target.innerHTML = '<img style="width: 128px; height: 128px" class="rounded-full" src="' + reader.result + '" />';
 
                     let data = {
                         imgBase64: reader.result
