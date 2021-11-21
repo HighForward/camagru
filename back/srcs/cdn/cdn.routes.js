@@ -4,6 +4,7 @@ import fs from 'fs'
 import {query} from "../mysql/mysql";
 import {findOne, findOneByUsername} from "../users/users.services";
 import {createPost, findOnePost, getPostForUserId} from "../posts/posts.services";
+import {getUserProfilePicture} from "./cdn.services";
 
 const cdnRoutes = express.Router();
 
@@ -35,20 +36,7 @@ cdnRoutes.post('/profile-picture', jwt_middleware, async (req, res) => {
 
 cdnRoutes.get('/profile-picture/:username', async (req, res) => {
 
-    if (!req.params.username)
-        return res.json({error: 'wrong param'})
-
-    let user = await findOneByUsername(req.params.username)
-    if (!user)
-        return res.json({error: 'user not found'})
-
-    if (user.profile_img) {
-
-        const contents = fs.readFileSync(`img/users/${user.id}/${user.id}-profile.png`, {encoding: 'base64'});
-        return res.json({imgBase64: contents})
-    }
-
-    return res.json({error: 'no profile picture found'})
+    return res.json(await getUserProfilePicture(req.params.username))
 })
 
 
@@ -98,7 +86,10 @@ cdnRoutes.get('/post/user/:user_id', async (req, res) => {
 })
 
 cdnRoutes.get('/post', async (req, res) => {
-    let posts = await query('SELECT * FROM posts')
+    let index = req.query.index
+    if (!index)
+        index = 0
+    let posts = await query(`SELECT * FROM posts LIMIT 5 OFFSET ${index}`)
     return res.json(posts)
 })
 
@@ -121,12 +112,12 @@ cdnRoutes.get('/post/:id', async (req, res) => {
     return res.json({ error: 'Inexisting post' })
 })
 
-cdnRoutes.delete('/post/:id', async (req, res) => {
+cdnRoutes.delete('/post/:id', jwt_middleware, async (req, res) => {
     if (!req.params.id)
         return res.json({error: 'wrong param'})
 
     const post = await findOnePost(req.params.id)
-    if (post) {
+    if (post && post.user_id === req.decoded_token.id) {
         await query(`DELETE FROM posts WHERE id = ${post.id}`)
         return res.json({success: 'post deleted' })
     }

@@ -11,6 +11,8 @@ import {query} from "../mysql/mysql";
 import {LikeFromUser} from "../likes/likes.services";
 import {getPostForUserId, getPostSizeForUserId} from "../posts/posts.services";
 import {getCommentsFromUser} from "../comments/comments.services";
+import {getUserProfilePicture} from "../cdn/cdn.services";
+import inputValidator from "../inputValidator/inputValidator";
 
 const usersRoutes = express.Router();
 
@@ -35,7 +37,6 @@ usersRoutes.get('/:username', async (req, res) => {
         let likes = await LikeFromUser(user.id)
         let posts = await getPostSizeForUserId(user.id)
         let comments = await getCommentsFromUser(user.id)
-        console.log(likes, posts, comments)
 
         user.likes = likes
         user.posts = posts
@@ -49,6 +50,32 @@ usersRoutes.get('/:username', async (req, res) => {
 
 usersRoutes.post('/update', jwt_middleware, async (req, res) => {
     return res.json(await updateUser(req))
+})
+
+usersRoutes.get('/search/:input', async (req, res) => {
+
+    if (!req.params.input)
+        return res.json({error: "wrong input"})
+
+    let validator = new inputValidator('', req.params.input, '')
+    if (!validator.isValidUsername())
+        return res.json({error: 'wrong input'})
+
+    const users = await query(`SELECT users.username, users.id FROM users`)
+
+    let target = users.filter((item) => {
+        if (item.username.includes(req.params.input))
+            return true
+    })
+
+    let val = await Promise.all(target.map(async (item) => {
+        let img = await getUserProfilePicture(item.username)
+        if (img)
+            item.imgBase64 = img.imgBase64
+        return item
+    })).then((e) => e)
+
+    return res.json(val)
 })
 
 export default usersRoutes

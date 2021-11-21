@@ -1,4 +1,5 @@
 import AbstractView from "../abstractView/abstractView.js";
+import {deleteAllCookies} from "../../app_utils.js";
 
 export default class extends AbstractView {
     constructor(params) {
@@ -10,7 +11,7 @@ export default class extends AbstractView {
 
         super.getView()
 
-        localStorage.clear();
+        deleteAllCookies()
 
         document.location.href = '/'
         document.getElementById('online_state_header').innerHTML = ''

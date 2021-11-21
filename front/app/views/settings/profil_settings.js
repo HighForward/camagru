@@ -1,5 +1,5 @@
 import AbstractView from "../abstractView/abstractView.js";
-import {fetch_get, fetch_json} from "../../app_utils.js";
+import {checkEmail, checkPasswordUsername, fetch_get, fetch_json} from "../../app_utils.js";
 import {notifyHandler} from "../../app.js";
 
 
@@ -57,6 +57,20 @@ export default class extends AbstractView {
                 email: document.getElementById('email').value,
                 password: document.getElementById('password').value,
                 mailer: document.getElementById('mailoncomments').checked
+            }
+
+            if (!checkEmail(data.email) && data.email !== "") {
+                notifyHandler.PushNotify('error', 'L\'adresse email est incorrecte')
+                return
+            }
+            if (!checkPasswordUsername(data.username) && data.username !== "") {
+                notifyHandler.PushNotify('error', 'Le nom d\'utilisateur est incorrecte')
+                return
+            }
+
+            if (!checkPasswordUsername(data.password) && data.password !== "") {
+                notifyHandler.PushNotify('error', 'Le mot de passe est incorrecte')
+                return
             }
 
             fetch_json('http://localhost:4000/users/update', 'POST', data, true).then((e) => {

@@ -29,6 +29,7 @@ export async function query(sql, array = true) {
     }).then(data => {
         return (data)
     }).catch(e => {
+        console.log(e)
         return null
     })
 }

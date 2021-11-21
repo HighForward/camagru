@@ -1,5 +1,5 @@
 import AbstractView from "../abstractView/abstractView.js";
-import {fetch_json} from "../../app_utils.js";
+import {checkPasswordUsername, fetch_json} from "../../app_utils.js";
 import {notifyHandler} from "../../app.js";
 
 export default class extends AbstractView {
@@ -27,6 +27,12 @@ async function perform_register(e) {
         password: document.getElementById('password').value,
     }
 
+    if (!checkPasswordUsername(data.username) || !checkPasswordUsername(data.password))
+    {
+        notifyHandler.PushNotify('error', 'Mauvais format')
+        return
+    }
+
     const res = await fetch_json('http://localhost:4000/auth/login', 'POST', data)
 
     if (res.error) {
@@ -36,7 +42,8 @@ async function perform_register(e) {
     {
         notifyHandler.PushNotify('success', 'Welcome !')
 
-        localStorage.setItem('jwt', `${res.jwt}`);
+        // localStorage.setItem('jwt', `${res.jwt}`);
+        document.cookie = `jwt=${res.jwt}`
         document.location.href = '/feed'
     }
 

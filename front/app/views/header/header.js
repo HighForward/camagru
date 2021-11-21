@@ -1,4 +1,6 @@
 import AbstractView from "../abstractView/abstractView.js";
+import {fetch_get} from "../../app_utils.js";
+import {notifyHandler} from "../../app.js";
 
 export default class extends AbstractView {
 
@@ -11,20 +13,95 @@ export default class extends AbstractView {
         this.sidebar_state = 0
     }
 
+    insertSearchBar()
+    {
+        return `
+                <div class="relative w-full" style="">
+                    <input class='mr-4 px-4 py-2 h-full searchbar' id='searchUser' placeholder='Recherche un utilisateur'>
+                    <div id="list-box" class="absolute searchbar">
+                        
+                    </div>
+                </div>
+        `
+    }
+
+    userDivHTML(user) {
+        let img
+        if (!user.imgBase64)
+            img = `<div class="rounded-full p-1" style="width: 32px; height: 32px;"></div>`
+        else
+            img = `<img alt="" class="rounded-full p-1" src="data:image/png;base64,${user.imgBase64}" style="width: 32px; height: 32px">`
+
+        return `
+        <div id='userfound-${user.username}' class="flex justify-between w-full hover:bg-gray-200 bg-white items-center cursor-pointer">` +
+            img + `
+            <a class="pr-2">${user.username}</a>
+        </div>
+        `
+    }
+
+    insertUsersFounds(users)
+    {
+
+        let list = document.getElementById('list-box')
+        list.innerHTML = ''
+        users.forEach((user) =>  {
+            list.insertAdjacentHTML('afterbegin', this.userDivHTML(user))
+            document.getElementById(`userfound-${user.username}`).addEventListener('click',() => {
+                location.href = `/user/${user.username}`
+            })
+        })
+    }
+
     updateOnlineStateHeader(user)
     {
         let online_state = (!!user)
 
         let online_right = document.getElementById('online_state_header')
 
-        if (this.connected !== online_state)
+        if (this.connected !== online_state) {
             online_right.innerHTML = ''
+        }
 
-        if (this.connected !== online_state && online_state)
+        if (this.connected !== online_state && online_state) {
             online_right.insertAdjacentHTML('afterbegin', `<a href="/logout" class=" mr-8 flex justify-center px-4 py-2 rounded text-center" style="background: #2ECC71;" data-link>Déconnexion</a>`)
+            online_right.insertAdjacentHTML('afterbegin', this.insertSearchBar())
+        }
 
-        if (!online_state && online_right.innerHTML === '')
-            online_right.insertAdjacentHTML('afterbegin', `<a href="/login" class=" mr-8 flex justify-center px-4 py-2 rounded text-center" style="background: #2ECC71;" data-link>Connexion</a>`)
+        if (!online_state && online_right.innerHTML === '') {
+            online_right.insertAdjacentHTML('afterbegin', `<a href="/login" class=" mr-4 flex justify-center px-4 py-2 rounded text-center" style="background: #2ECC71;" data-link>Connexion</a>`)
+            online_right.insertAdjacentHTML('afterbegin', `<a href="/register" class="mr-4 flex justify-center px-4 py-2 rounded text-center" style="background: #2ECC71;" data-link>S'inscrire</a>`)
+            online_right.insertAdjacentHTML('afterbegin', this.insertSearchBar())
+        }
+
+        // online_right.insertAdjacentHTML('afterbegin', this.insertSearchBar())
+
+
+        document.getElementById('searchUser').addEventListener('input', async (e) => {
+            let list = document.getElementById('list-box')
+            list.innerHTML = ''
+            if (e.target.value.length >= 3)
+            {
+                let users = await fetch(`http://localhost:4000/users/search/${e.target.value}`).then((res) => {
+                    return res.json()
+                }).catch((e) => {
+                    if (e.error)
+                        return ({ error: e.error })
+                    return ({ error: e})
+                })
+
+                if (e.error)
+                    notifyHandler.PushNotify('error', 'error')
+
+                if (users && users.length)
+                {
+                    this.insertUsersFounds(users)
+                }
+
+            }
+        })
+
+        document.getElementById("list-box")
 
         this.toggleLeftSide(user)
         this.connected = online_state
@@ -34,15 +111,8 @@ export default class extends AbstractView {
     {
         let elms = document.querySelectorAll("[id='item_nav']");
         if (trigger) {
-
-            // for (let i = 0; i < elms.length; i++) {
-            //     elms[i].onclick = () => {
-
-                    // console.log(elms[i])
-                    let main_div = document.getElementById('sidebar')
-                    main_div.className = this.classList + 'invisible transition-all duration-300'
-                // }
-            // }
+            let main_div = document.getElementById('sidebar')
+            main_div.className = this.classList + 'invisible transition-all duration-300'
         }
         else
         {
@@ -113,13 +183,9 @@ export default class extends AbstractView {
 
     async createSideBar(user)
     {
-        // classList = 'absolute left-0 bottom-0 w-0 bg-gray-200 '
-
         let main_div = document.createElement('div')
         main_div.id = 'sidebar'
         main_div.className = this.classList + 'invisible'
-        // main_div.style.minHeight = 'calc(100vh - var(--header-size))'
-        // main_div.style.maxHeight = 'calc(100vh - var(--header-size))'
         main_div.style.top = 'var(--header-size)'
         main_div.style.background = 'var(--primary-color)'
         let nav = document.createElement('div')
@@ -135,7 +201,6 @@ export default class extends AbstractView {
         })
 
         main_div.getElementsByTagName('a')
-
     }
 
     async getView(user) {

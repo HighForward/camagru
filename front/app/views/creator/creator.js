@@ -16,7 +16,6 @@ export default class extends AbstractView {
         super.getView()
         await this.getHtml()
 
-
         let filters = []
         let imageBase = undefined;
         let videoBase = undefined
@@ -26,9 +25,14 @@ export default class extends AbstractView {
         let canvas = document.getElementById("canvas_creator");
         let ctx = canvas.getContext("2d");
 
+        canvas.width = 672
+        canvas.height = 672
+
+        console.log(canvas.width, canvas.height)
+
+
         ctx.fillStyle = '#000000'
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
 
         let camera_button = document.getElementById("start-camera");
 
@@ -46,7 +50,7 @@ export default class extends AbstractView {
         }
 
         function clear() {
-            ctx.clearRect(0, 0, 600, 600);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#000000'
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
@@ -78,7 +82,7 @@ export default class extends AbstractView {
         function stopTrackCamera()
         {
             videoBase.srcObject.getTracks().forEach(function(track) {
-                if (track.readyState == 'live' && track.kind === 'video') {
+                if (track.readyState === 'live' && track.kind === 'video') {
                     track.stop();
                 }
             });
@@ -86,10 +90,11 @@ export default class extends AbstractView {
 
         function generateFilters()
         {
-            let filters_tag = ['red', 'corona', 'gold', 'rose', 'santa-hat', 'gift', 'flowers']
+            let filters_tag = ['red', 'corona', 'gold', 'rose', 'santa-hat', 'gift', 'flowers', 'perenoel', 'houx']
             let filters_div = document.getElementById('filters')
 
             filters_tag.forEach((tag) => {
+
                 filters_div.insertAdjacentHTML('beforeend',
                     `<img crossorigin="anonymous" id='${tag}' src="http://localhost:4000/img/${tag}.png" alt="" class="p-2 filter_class w-24 h-24">`)
 

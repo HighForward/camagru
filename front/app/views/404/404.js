@@ -8,6 +8,7 @@ export default class extends AbstractView {
 
     async getView() {
         super.getView();
+        console.log('404')
 
         await this.getHtml()
 

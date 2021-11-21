@@ -44,8 +44,6 @@ export async function register(body)
         return hash
     })
 
-    console.log(body.password)
-
     const user = await createUser(body).then(e => {
         return e
     }).catch(e => {

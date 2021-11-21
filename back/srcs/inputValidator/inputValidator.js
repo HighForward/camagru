@@ -71,7 +71,7 @@ export default class inputValidator
         // if (!this.isValidPassword())
         //     return ({ error: 'le mot de passe est incorrect' })
 
-        return ({ success: 'Information corrects '})
+        return ({ success: 'Informations correctes'})
     }
 
 }

@@ -1,10 +1,32 @@
 import {app_header} from './app.js'
 
+function getJwtToken()
+{
+    let jwt
+    if (document.cookie && document.cookie.includes('jwt='))
+    {
+        jwt = document.cookie.substring(4)
+        if (jwt && jwt.length)
+            return jwt
+    }
+    return ""
+}
+
+export const deleteAllCookies = () => {
+    const cookies = document.cookie.split(";");
+    for (const cookie of cookies) {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
+
 export async function isUserOnline() {
 
     let online = false
 
-    let jwt = localStorage.getItem('jwt');
+    console.log(document.cookie)
+    let jwt = getJwtToken()
     let user = null
     if (jwt)
     {
@@ -13,12 +35,16 @@ export async function isUserOnline() {
                 user = e;
             return !e.error;
         }).catch((e) => {
-            // console.log(e)
             return false
         })
 
+        console.log(online)
+
         if (!online)
-            localStorage.clear();
+            console.log('pas online on reset')
+
+        if (!online)
+            deleteAllCookies()
     }
 
     return (user)
@@ -35,9 +61,10 @@ export async function fetch_json(url, method, data, authJWT = false) {
     }
 
     if (authJWT) {
+        let jwt = getJwtToken()
         init.headers.append('withCredentials', true)
         init.headers.append('credentials', 'includes')
-        init.headers.append("Authorization", `Bearer ${localStorage.getItem('jwt')}`)
+        init.headers.append("Authorization", `Bearer ${jwt}`)
     }
 
     return await fetch(url, init).then((res) => {
@@ -50,12 +77,14 @@ export async function fetch_json(url, method, data, authJWT = false) {
 }
 
 export async function fetch_get(url) {
+
+    let jwt = getJwtToken()
     return await fetch(url, {
         method: 'GET',
         headers: new Headers({
             withCredentials: true,
             credentials: 'include',
-            'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+            'Authorization': `Bearer ${jwt}`,
             'Content-Type': 'application/json'
         })
     }).then(async (res) => {
@@ -66,4 +95,20 @@ export async function fetch_get(url) {
 
         return ({ error: 'error request'})
     })
+}
+
+
+export function checkEmail(value)
+{
+    let email_regex = /^[^\s@]+@[^\s@]+$/
+
+    return email_regex.test(value);
+
+}
+
+export function checkPasswordUsername(value)
+{
+    let password_regex = /^[A-Za-z]\w{2,14}$/
+
+    return password_regex.test(value)
 }

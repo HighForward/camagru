@@ -32,6 +32,7 @@ export default class {
         if (app.innerHTML !== '')
             app.innerHTML = ''
 
+        window.onscroll = null
     }
 
 }

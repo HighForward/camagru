@@ -12,6 +12,7 @@ import user_id from "./views/user_id/user-id.js";
 import header from "./views/header/header.js";
 import validate from "./views/validate/validate.js";
 import lostPassword from "./views/lostpassword/lostpassword.js";
+import resetPassword from "./views/reset-password/reset-password.js";
 
 let online_state = false
 export let app_header = new header()
@@ -26,24 +27,30 @@ export const routes = [
     {path: "/user", file_path: 'views/user_id/user_id.html', view: user_id},
     {path: "/validate", file_path: 'views/validate/validate.html', view: validate},
     {path: "/lostpassword", file_path: 'views/lostpassword/lostpassword.html', view: lostPassword},
+    {path: "/reset", file_path: 'views/reset-password/reset-password.html', view: resetPassword},
 ];
+
+function checkDirRoute(split_route)
+{
+    for (let route of routes)
+    {
+        if (route.path === location.pathname || route.path.substring(1) === split_route[0])
+            return route
+    }
+    return undefined
+}
 
 function perform_routing()
 {
-    let match = routes.find((e) => e.path === location.pathname)
     let split_route = location.pathname.split('/').filter((e) => e)
+    let match
 
-    if (split_route && split_route.length === 2 && split_route[0] === 'user') {
-        match = routes.find((e) => e.path === '/user')
-    }
+    let view = new error({file_path: 'views/404/404.html'})
 
-    if (split_route && split_route.length === 2 && split_route[0] === 'validate') {
-        match = routes.find((e) => e.path === '/validate')
-    }
-
-    let view = new error({error: '404'})
-    if (match)
+    if ((match = checkDirRoute(split_route))) {
         view = new match.view(match)
+    }
+
     return ({view, target_user: split_route[1]})
 }
 
@@ -52,8 +59,6 @@ const router = async () => {
     let {view, target_user} = perform_routing()
 
     let user = await isUserOnline(online_state)
-    // app_header.getView(user)
-
     app_header.createSideBar(user)
     app_header.updateOnlineStateHeader(user)
 

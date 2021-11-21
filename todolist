@@ -1,3 +1,8 @@
 front validator
-finir reset password
-pagination feed
+
+bonus:	search bar
+		rendu temps reel
+		ajaxifier les requetes
+		creator dynamique
+		pagination infini
+		carousselle creator

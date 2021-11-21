@@ -1,8 +1,8 @@
-<div class='flex justify-center items-start' style="min-height: calc(100vh - 4rem); background: #181818">
-	<div class="flex mt-4 pt-2 flex-col h-full">
-		<div class="flex flex-row h-full">
-			<div class="flex flex-col">
-				<canvas style="max-height: 800px" id="canvas_creator" width="400px" height="400px"></canvas>
+<div class='flex justify-center items-start w-full' style="min-height: calc(100vh - 4rem); background: #181818">
+	<div class="flex mt-4 pt-2 flex-col h-full w-full justify-center items-center">
+		<div class="flex flex-col h-full justify-center items-center">
+			<div class="flex flex-col w-creator-div">
+				<canvas style="max-height: 672px;" height="320px" width="320px" id="canvas_creator"></canvas>
 				<div class="flex" style="height: 40px">
 					<button style="background: var(--primary-color)" class="flex border border-gray-800 flex-1 justify-center items-center hover:text-white font-semibold text-gray-500" id="start-camera">Activer la webcam</button>
 					<div class="flex flex-1 w-full justify-center">
@@ -10,14 +10,14 @@
 						<label style="background: var(--primary-color)" class="flex border border-gray-800 hover:text-white cursor-pointer w-full justify-center items-center font-semibold text-gray-500" for="file">Choisir une photo</label>
 					</div>
 				</div>
-				<div class="flex flex-row items-center mt-6 border border-gray-300">
+				<div class="flex flex-row border-b border-t w-full" style="border-color: #0a0a0a;">
+					<button id="upButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color);">▲</button>
+					<div id="filters" class="bite flex flex-row flex-grow overflow-hidden P-2 cursor-pointer"></div>
+					<button id="downButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color);">▼</button>
+				</div>
+				<div class="flex flex-row items-center border border-gray-300">
 					<button id="sharebutton" style="background: var(--main-color)" class="flex flex-1 py-2 w-full font-semibold text-2xl justify-center hover:text-white">Partager</button>
 				</div>
-			</div>
-			<div class="flex flex-col ml-12 border-r-4 border-l-4" style="border-color: #0a0a0a; max-height: 100%">
-				<button id="upButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color); height: 25px">▲</button>
-				<div id="filters" class="bite flex flex-col flex-grow overflow-hidden P-2 cursor-pointer" style="height: 0"></div>
-				<button id="downButton" class="flex items-center justify-center" style="background: var(--primary-color); color: var(--main-color); height: 25px">▼</button>
 			</div>
 		</div>
 		<video id="video" width="0" height="0" autoplay></video>

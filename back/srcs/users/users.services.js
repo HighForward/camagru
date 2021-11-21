@@ -1,5 +1,6 @@
 import { query } from "../mysql/mysql";
 import inputValidator from "../inputValidator/inputValidator";
+import bcrypt from "bcryptjs";
 
 
 export async function findAll()
@@ -13,7 +14,7 @@ export async function findAll()
 
 export async function findOne(id)
 {
-    return await query(`SELECT users.id, users.profile_img, users.username, users.email from users where id = ${id}`, false).then(e => {
+    return await query(`SELECT users.id, users.profile_img, users.username, users.email, users.reset_uuid from users where id = ${id}`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})
@@ -85,8 +86,6 @@ export async function updateUser(req)
     if (!user || user.error)
         return ({ error: 'Updating error' })
 
-    console.log(mailer)
-
     let validator = new inputValidator(email, username, password)
     let state = validator.checkValueUpdate()
 
@@ -109,14 +108,20 @@ export async function updateUser(req)
         if (users)
             return ({ error: 'Cette addresse email est déjà utilisé' })
 
-        if (!users && users.error)
+        if (!users)
             await query(`UPDATE users SET email = '${email}' WHERE id = ${req.decoded_token.id}`)
     }
 
-    if (password && validator.isValidPassword(password))
-        await query(`UPDATE users SET password = '${password}' WHERE id = ${req.decoded_token.id}`)
+    if (password && validator.isValidPassword(password)) {
 
-    console.log(mailer, Boolean(user.mailer))
+        let hash = await bcrypt.hash(password, 10).then((hash) => {
+            return hash
+        })
+        await query(`UPDATE users
+                     SET password = '${hash}'
+                     WHERE id = ${req.decoded_token.id}`)
+    }
+
     if (mailer !== Boolean(user.mailer))
         await query(`UPDATE users SET mailer = ${mailer} WHERE id = ${req.decoded_token.id}`)
 

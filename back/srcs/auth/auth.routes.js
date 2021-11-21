@@ -7,6 +7,7 @@ import {findOne, findOneByEmail} from "../users/users.services";
 import {MAIL_TYPE, sendMail} from "../mailer/mailer.services";
 import {query} from "../mysql/mysql";
 import inputValidator from "../inputValidator/inputValidator";
+import bcrypt from "bcryptjs";
 
 authRouter.post('/login', async (req, res) => {
 
@@ -14,7 +15,7 @@ authRouter.post('/login', async (req, res) => {
 
         const jwt_token = jwt.sign({
             id: e.id,
-        }, process.env.JWT_SECRET, { expiresIn: '1h'})
+        }, process.env.JWT_SECRET, { expiresIn: '365d'})
 
         return res.status(200).json({ jwt: jwt_token })
     }).catch(e => {
@@ -59,8 +60,9 @@ authRouter.get('/validate/:uuid', async (req, res) => {
 authRouter.post('/reset', async (req, res) => {
 
     const { email } = req.body
+
     if (!email)
-        return ({ error: 'Tu dois d\'abord preciser ton email' })
+        return res.json({ error: 'Tu dois d\'abord preciser ton email' })
 
     let validator = new inputValidator(email, '', '')
 
@@ -72,10 +74,36 @@ authRouter.post('/reset', async (req, res) => {
     {
         await query(`UPDATE users SET reset_uuid = UUID() WHERE id = ${user.id}`)
 
+        user = await findOne(user.id)
         sendMail(email, MAIL_TYPE.RESET, user)
         return res.json({ success: 'Un email à été envoyé à l\'adresse indiqué' })
     }
     return res.json({ error: 'Cette adresse email semble inconnue ...' })
+
+})
+
+authRouter.post('/reset/uuid', async (req, res) => {
+    const { password, confirm_password, uuid } = req.body
+
+    if (password !== confirm_password)
+        return res.json({error: 'Les mots de passe ne sont pas identique'})
+    let validator = new inputValidator('', '', password)
+
+    let user = await query(`SELECT users.id, users.reset_uuid FROM users WHERE users.reset_uuid = '${uuid}'`, false)
+    if (!user)
+        return res.json({error: 'Token invalide ou déjà utilisé'})
+
+    if (validator.isValidPassword() && user)
+    {
+        let hash = await bcrypt.hash(password, 10).then((hash) => {
+            return hash
+        })
+        await query(`UPDATE users SET password = '${hash}', reset_uuid = NULL WHERE id = ${user.id}`)
+
+        return res.json({success: 'Tu as bien modifié ton mot de passe !'})
+    }
+
+    return res.json({error: 'mot de passe invalide'})
 
 })
 
