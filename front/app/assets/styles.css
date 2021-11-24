@@ -4,6 +4,15 @@
     /*background: red;*/
 }
 
+.filter_class
+{
+    transform: translateX(-96px);
+    min-width: 96px;
+    min-height: 96px;
+    height: 96px;
+    width: 96px;
+}
+
 /*USER_ID*/
 .img-wrap {
     position: relative;

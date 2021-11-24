@@ -80,7 +80,6 @@ export default class extends AbstractView {
                     notifyHandler.PushNotify('success', e.success)
 
             }).catch((e) => {
-                console.log('error', e)
             })
         })
 

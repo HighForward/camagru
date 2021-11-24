@@ -14,8 +14,6 @@ export default function jwt_middleware(req, res, next) {
 
     const token = req.headers.authorization && extractBearerToken(req.headers.authorization)
 
-    console.log(token)
-
     if (!token) {
         return res.status(401).json({ error: 'Need a token' })
     }

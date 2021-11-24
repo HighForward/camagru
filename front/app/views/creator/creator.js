@@ -21,15 +21,14 @@ export default class extends AbstractView {
         let videoBase = undefined
         let videoInterval
         let cameraButtonState = 0
+        let step = 96
+        let size = -96
 
         let canvas = document.getElementById("canvas_creator");
         let ctx = canvas.getContext("2d");
 
         canvas.width = 672
         canvas.height = 672
-
-        console.log(canvas.width, canvas.height)
-
 
         ctx.fillStyle = '#000000'
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -90,13 +89,13 @@ export default class extends AbstractView {
 
         function generateFilters()
         {
-            let filters_tag = ['red', 'corona', 'gold', 'rose', 'santa-hat', 'gift', 'flowers', 'perenoel', 'houx']
+            let filters_tag = ['caca', 'cat', 'citrouille', 'coeur', 'corona', 'french', 'neon', 'vers', 'flower']
             let filters_div = document.getElementById('filters')
 
             filters_tag.forEach((tag) => {
 
                 filters_div.insertAdjacentHTML('beforeend',
-                    `<img crossorigin="anonymous" id='${tag}' src="http://localhost:4000/img/${tag}.png" alt="" class="p-2 filter_class w-24 h-24">`)
+                    `<img crossorigin="anonymous" id='${tag}' src="http://localhost:4000/img/${tag}.png" alt="" style="" class="p-2 filter_class">`)
 
                 document.getElementById(tag).addEventListener('click', (e) => {
 
@@ -328,7 +327,6 @@ export default class extends AbstractView {
                     imageBase.src = reader.result;
                     imageBase.onload = () => {
 
-                        console.log('ok??')
                         filters.splice(0, filters.length)
 
                         if (videoBase) {
@@ -353,18 +351,56 @@ export default class extends AbstractView {
         })
 
 
-        document.getElementById('upButton').addEventListener('click', (e) => {
+        document.getElementById('upButton').addEventListener('click', async (e) => {
             let filters_div = document.getElementById('filters')
-            filters_div.append(filters_div.firstChild)
+            let imgs = filters_div.getElementsByTagName('img')
+
+            // filters_div.style.transition = 'all is ease-out'
+            size = size - step
+            for (let img of imgs) {
+                if (img.src !== filters_div.getElementsByTagName('img')[0].src) {
+                    img.style.transform = `translateX(${size}px)`
+                    img.style.transition = 'all 0.1s ease-out'
+                }
+            }
+            size = size + step
+            setTimeout(() => {
+                filters_div.append(filters_div.firstChild)
+                for (let img of imgs) {
+                    img.style.transform = `translateX(${size}px)`
+                    img.style.transition = 'none'
+
+                }
+            }, 100)
         })
 
         document.getElementById('downButton').addEventListener('click', (e) => {
             let filters_div = document.getElementById('filters')
-            filters_div.prepend(filters_div.lastChild)
+            let imgs = filters_div.getElementsByTagName('img')
+
+            size = size + step
+
+            let array = filters_div.getElementsByTagName('img')
+
+            for (let img of imgs) {
+                if (img.src !== imgs[imgs.length - 1]) {
+                    img.style.transform = `translateX(${size}px)`
+                    img.style.transition = 'all 0.1s ease-out'
+                }
+            }
+            size = size - step
+            setTimeout(() => {
+                filters_div.prepend(filters_div.lastChild)
+                for (let img of imgs) {
+                    img.style.transform = `translateX(${size}px)`
+                    img.style.transition = 'none'
+
+                }
+            }, 100)
+
         })
 
         camera_button.addEventListener('click', async function() {
-
 
             draw()
             if (cameraButtonState === 0)
@@ -373,9 +409,6 @@ export default class extends AbstractView {
                 if (imageBase)
                     imageBase = undefined
                 let video = document.querySelector("#video");
-
-
-
 
                 video.srcObject = await navigator.mediaDevices.getUserMedia({video: true, audio: false}).catch(e => {
                     return null

@@ -18,6 +18,10 @@ likesRoutes.post('/', jwt_middleware, async (req, res) => {
     if (post_id && user_id) {
 
         let liked = await isAlreadyLiked(user_id, post_id)
+
+        let post = await query(`SELECT * FROM posts WHERE id = ${post_id}`, false)
+        if (!post)
+            return res.json({error: 'ce post n\'existe plus' })
         if (!liked)
             await createLike(user_id, post_id)
         else
@@ -31,6 +35,9 @@ likesRoutes.post('/', jwt_middleware, async (req, res) => {
 likesRoutes.post('/isliked', async (req, res) => {
     const {post_id, user_id} = req.body
     if  (post_id && user_id) {
+        let post = await query(`SELECT * FROM posts WHERE id = ${post_id}`, false)
+        if (!post)
+            return res.json({error: 'ce post n\'existe plus' })
         const like = await isAlreadyLiked(user_id, post_id)
         return res.json(like !== undefined)
     }

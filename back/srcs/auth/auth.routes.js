@@ -38,9 +38,8 @@ authRouter.post('/register', async (req, res) => {
 
 authRouter.get('/fetch_user', jwt_middleware, async (req, res) => {
 
-    const token = req.headers['authorization'].split(' ')[1]
-    const user = jwt.decode(token)
-    return res.json(await findOne(user.id))
+    const token = req.decoded_token
+    return res.json(await findOne(token.id))
 })
 
 authRouter.get('/validate/:uuid', async (req, res) => {

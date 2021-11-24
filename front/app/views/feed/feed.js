@@ -87,7 +87,6 @@ export default class extends AbstractView {
             e.preventDefault()
             if (user) {
                 let commentInput = this.GetElementInsideContainer(`post-${i}`, 'commentInput')
-                console.log('tg')
 
                 const regex = /^[a-z0-9]+$/i
                 if (commentInput.value && commentInput.value.length >= 1 && commentInput.value.length <= 128 && regex.test(commentInput.value))

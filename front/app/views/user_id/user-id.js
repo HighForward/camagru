@@ -77,7 +77,6 @@ export default class extends AbstractView {
                             await fetch_json(`http://localhost:4000/cdn/post/${post.id}`, 'DELETE', undefined, true).then(async e => {
 
                                 let res = e
-                                console.log(res)
                                 if (res.success) {
                                     let toDelete = document.getElementById(`post-wrap-${post.id}`)
                                     toDelete.parentNode.removeChild(toDelete)

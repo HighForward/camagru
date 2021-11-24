@@ -48,9 +48,9 @@ export async function findOneByEmail(email)
     })
 }
 
-export async function userExists(email)
+export async function userExists(email, username)
 {
-    return await query(`SELECT users.id, users.profile_img, users.username, users.email from users where email = '${email}'`, false).then(e => {
+    return await query(`SELECT users.id, users.profile_img, users.username, users.email from users where email = '${email}' OR username = '${username}'`, false).then(e => {
         return e
     }).catch(e => {
         return ({ error: 'Can\'t find user '})
@@ -63,7 +63,7 @@ export async function createUser(payload)
 
     let { email, username, password } = payload
 
-    let user = await userExists(email)
+    let user = await userExists(email, username)
 
     if (!user) {
 

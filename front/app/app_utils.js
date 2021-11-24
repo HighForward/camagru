@@ -1,6 +1,6 @@
 import {app_header} from './app.js'
 
-function getJwtToken()
+export function getJwtToken()
 {
     let jwt
     if (document.cookie && document.cookie.includes('jwt='))
@@ -25,10 +25,9 @@ export async function isUserOnline() {
 
     let online = false
 
-    console.log(document.cookie)
     let jwt = getJwtToken()
     let user = null
-    if (jwt)
+    if (jwt && jwt.length)
     {
         online = await fetch_get('http://localhost:4000/auth/fetch_user').then((e) => {
             if (!e.error)
@@ -37,11 +36,6 @@ export async function isUserOnline() {
         }).catch((e) => {
             return false
         })
-
-        console.log(online)
-
-        if (!online)
-            console.log('pas online on reset')
 
         if (!online)
             deleteAllCookies()
@@ -90,8 +84,6 @@ export async function fetch_get(url) {
     }).then(async (res) => {
         return res.json()
     }).catch((e) => {
-
-        console.log(e)
 
         return ({ error: 'error request'})
     })

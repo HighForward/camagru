@@ -13,7 +13,8 @@ export async function getUserProfilePicture(username)
     if (user.profile_img) {
 
         const contents = fs.readFileSync(`img/users/${user.id}/${user.id}-profile.png`, {encoding: 'base64'});
-        return {imgBase64: contents}
+        if (contents)
+            return {imgBase64: contents}
     }
 
     return {error: 'no profile picture found'}

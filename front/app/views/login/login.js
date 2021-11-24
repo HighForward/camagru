@@ -1,5 +1,5 @@
 import AbstractView from "../abstractView/abstractView.js";
-import {checkPasswordUsername, fetch_json} from "../../app_utils.js";
+import {checkPasswordUsername, fetch_json, getJwtToken} from "../../app_utils.js";
 import {notifyHandler} from "../../app.js";
 
 export default class extends AbstractView {
@@ -36,19 +36,18 @@ async function perform_register(e) {
     const res = await fetch_json('http://localhost:4000/auth/login', 'POST', data)
 
     if (res.error) {
-        notifyHandler.PushNotify('error',res.error)
+        notifyHandler.PushNotify('error', res.error)
     }
     else
     {
+        document.cookie = `jwt=${res.jwt}; path=/`
         notifyHandler.PushNotify('success', 'Welcome !')
 
-        // localStorage.setItem('jwt', `${res.jwt}`);
-        document.cookie = `jwt=${res.jwt}`
-        document.location.href = '/feed'
+        await setTimeout(() => {
+            if (getJwtToken().length)
+                document.location.href = '/'
+        }, 750)
     }
-
-    console.log(res)
-
-    return false
+    return true
 }
 
