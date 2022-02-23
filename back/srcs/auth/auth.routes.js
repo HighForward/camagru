@@ -25,12 +25,12 @@ authRouter.post('/login', async (req, res) => {
 })
 
 authRouter.post('/register', async (req, res) => {
-    return await register(req.body).then(user => {
+    return await register(req.body).then(async user => {
 
-        if (!sendMail(user.email, MAIL_TYPE.REGISTER, user))
-            console.log('weird email')
+        if (!await sendMail(user.email, MAIL_TYPE.REGISTER, user))
+            throw ({error: "something went wrong. email not shipped"})
 
-        return res.json({ email: user.email})
+        return res.json({email: user.email})
     }).catch(e => {
         return res.status(401).json({ error: e.error })
     })

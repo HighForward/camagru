@@ -1,8 +1,16 @@
 front validator
 
 bonus:	search bar
-		rendu temps reel
 		ajaxifier les requetes
 		creator dynamique
 		pagination infini
 		carousselle creator
+
+		single page app
+
+ Faire un aperçu du rendu final en live, directement sur l’aperçu de la caméra. On
+notera que c’est bien plus simple qu’il n’y paraît
+
+
+• Une section latérale, affichant les miniatures de toutes les photos prises précedemment
+• footer pour faire plaisir

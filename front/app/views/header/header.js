@@ -17,7 +17,7 @@ export default class extends AbstractView {
     {
         return `
                 <div class="relative w-full" style="">
-                    <input class='mr-4 px-4 py-2 h-full searchbar' id='searchUser' placeholder='Recherche un utilisateur'>
+                    <input class='mr-4 md:inline hidden px-4 py-2 h-full searchbar' id='searchUser' placeholder='Recherche un utilisateur'>
                     <div id="list-box" class="absolute searchbar">
                         
                     </div>

@@ -11,7 +11,7 @@ export default class extends AbstractView {
 
         super.getView()
 
-        deleteAllCookies()
+        await deleteAllCookies()
 
         document.location.href = '/'
         document.getElementById('online_state_header').innerHTML = ''

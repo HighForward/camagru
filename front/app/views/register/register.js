@@ -30,15 +30,18 @@ async function perform_register(e) {
         confirm_password: document.getElementById('confirm_password').value
     }
 
+
     if (!checkEmail(data.email) || !checkPasswordUsername(data.username)
         || !checkPasswordUsername(data.password) || !checkPasswordUsername(data.confirm_password))
     {
-        notifyHandler.PushNotify('Certaines informations sont mal formatées')
+        notifyHandler.PushNotify("error", 'Certaines informations sont mal formatées')
         return
     }
 
     const res = await fetch_json('http://localhost:4000/auth/register', 'POST', data)
+    console.log("salut")
 
+    console.log(res)
 
     if (res.error) {
         notifyHandler.PushNotify('error', res.error)

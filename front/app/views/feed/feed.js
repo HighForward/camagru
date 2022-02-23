@@ -88,9 +88,11 @@ export default class extends AbstractView {
             if (user) {
                 let commentInput = this.GetElementInsideContainer(`post-${i}`, 'commentInput')
 
-                const regex = /^[a-z0-9]+$/i
-                if (commentInput.value && commentInput.value.length >= 1 && commentInput.value.length <= 128 && regex.test(commentInput.value))
+                let val = commentInput.value.toString()
+
+                if (val && val.length >= 1 && val.length <= 128)
                 {
+                    console.log(val)
                     fetch_json('http://localhost:4000/comments', 'POST', {
                         comment: commentInput.value,
                         post_id: post.id
