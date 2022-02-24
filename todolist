@@ -2,15 +2,14 @@ front validator
 
 bonus:	search bar
 		ajaxifier les requetes
-		creator dynamique
+		creator dynamique (appercu sur la cam en direct)
 		pagination infini
 		carousselle creator
-
 		single page app
 
- Faire un aperçu du rendu final en live, directement sur l’aperçu de la caméra. On
-notera que c’est bien plus simple qu’il n’y paraît
 
-
-• Une section latérale, affichant les miniatures de toutes les photos prises précedemment
+• Une section latérale, affichant les miniatures de toutes les photos prises précedemment + responsive
 • footer pour faire plaisir
+
+
+like request from profil not good

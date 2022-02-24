@@ -63,6 +63,15 @@ const router = async () => {
     app_header.updateOnlineStateHeader(user)
 
     await view.getView(user, target_user)
+
+
+    let footer = document.createElement("div")
+    footer.className = "w-full flex justify-center items-center flex-col bg-black"
+    footer.style.height = "var(--footer-size)"
+    footer.style.color = "var(--main-color)"
+    footer.innerHTML = "Made with ♥ by mbrignol"
+
+    document.getElementById("app").insertAdjacentElement("beforeend", footer)
 }
 
 document.body.addEventListener("click", async e => {

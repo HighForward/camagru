@@ -23,7 +23,10 @@
 		--secondary-color: #181818;
 		--main-color: #2ECC71;
 
-		--header-size: 64px
+		--header-size: 64px;
+		--footer-size: 64px;
+
+        --headfoot-size: calc(var(--header-size) + var(--footer-size));
 	}
 
 	.header_height
@@ -38,7 +41,13 @@
 
 	.default_height
 	{
-		min-height: calc(100vh - var(--header-size));
+		min-height: calc(100vh - var(--headfoot-size));
+        padding-bottom: 32px;
 	}
+
+    .default_height_app
+    {
+        /*min-height: calc(100vh - var(--header-size));*/
+    }
 
 </style>
